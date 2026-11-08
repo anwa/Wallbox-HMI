@@ -48,6 +48,12 @@ script:
           id(wb_state_code).publish_state("");
           id(wb_state_text).publish_state("");
           id(wb_current_option).publish_state("");
+          for (auto *sensor : {id(battery_bank_soc), id(battery_bank_power),
+                               id(battery_bank_voltage), id(battery_bank_current),
+                               id(battery_bank_temperature)}) {
+            sensor->publish_state(NAN);
+          }
+          id(battery_bank_state).publish_state("");
           id(requested_current_option).clear();
 
   - id: select_page
@@ -134,6 +140,7 @@ script:
             if (i == id(active_page)) lv_obj_add_state(navigation[i], LV_STATE_CHECKED);
             else lv_obj_remove_state(navigation[i], LV_STATE_CHECKED);
           }
+      - script.execute: refresh_battery_bank
 
   - id: refresh_trends
     then:

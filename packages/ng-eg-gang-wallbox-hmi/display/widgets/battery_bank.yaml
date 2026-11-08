@@ -1,0 +1,80 @@
+# Aggregate, read-only battery bank card; no substitution variables required.
+x: 592
+y: 70
+width: 196
+height: 334
+styles: card_style
+widgets:
+  - label:
+      x: 10
+      y: 10
+      text: "BATTERY BANK"
+      styles: muted_text
+  - label:
+      id: battery_soc_value
+      align: TOP_MID
+      y: 53
+      text: "-- %"
+      text_font: font_battery_soc
+  - label:
+      x: 10
+      y: 110
+      text: "Leistung"
+      text_font: font_small
+      styles: muted_text
+  - label:
+      id: battery_power_value
+      x: 64
+      y: 107
+      width: 120
+      text_align: RIGHT
+      text: "-- kW"
+  - label:
+      x: 10
+      y: 142
+      text: "Spannung"
+      text_font: font_small
+      styles: muted_text
+  - label:
+      id: battery_voltage_value
+      x: 88
+      y: 139
+      width: 96
+      text_align: RIGHT
+      text: "-- V"
+  - label:
+      x: 10
+      y: 174
+      text: "Strom"
+      text_font: font_small
+      styles: muted_text
+  - label:
+      id: battery_current_value
+      x: 88
+      y: 171
+      width: 96
+      text_align: RIGHT
+      text: "-- A"
+  - label:
+      x: 10
+      y: 206
+      text: "Temperatur"
+      text_font: font_small
+      styles: muted_text
+  - label:
+      id: battery_temperature_value
+      x: 88
+      y: 203
+      width: 96
+      text_align: RIGHT
+      text: "-- °C"
+  - label:
+      id: battery_state_value
+      align: TOP_MID
+      y: 280
+      width: 176
+      height: 44
+      text_align: CENTER
+      long_mode: WRAP
+      text: "HA offline"
+      text_color: 0xFFB65C

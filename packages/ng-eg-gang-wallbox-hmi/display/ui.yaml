@@ -2,6 +2,18 @@
 # Google Fonts are downloaded at build time, never by the running display.
 font:
   - file: gfonts://Roboto@500
+    id: font_small
+    size: 14
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["ÄÖÜäöüß°€…–·"]
+  - file: gfonts://Roboto@500
+    id: font_battery_soc
+    size: 32
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["ÄÖÜäöüß°€…–·"]
+  - file: gfonts://Roboto@500
     id: font_body
     size: 18
     bpp: 4
@@ -168,7 +180,7 @@ lvgl:
         - obj:
             x: 12
             y: 70
-            width: 380
+            width: 304
             height: 204
             styles: card_style
             widgets:
@@ -193,12 +205,12 @@ lvgl:
               - label:
                   x: 20
                   y: 172
-                  text: "Heidelberg Energy Control · 11 kW"
+                  text: "Heidelberg · 11 kW"
                   styles: muted_text
         - obj:
-            x: 404
+            x: 328
             y: 70
-            width: 384
+            width: 252
             height: 204
             styles: card_style
             widgets:
@@ -217,29 +229,29 @@ lvgl:
               - label:
                   x: 18
                   y: 94
-                  text: "PCB-Temperatur"
+                  text: "PCB-Temp."
                   styles: muted_text
               - label:
                   id: temperature_value
-                  x: 214
+                  x: 142
                   y: 90
                   text: "-- °C"
                   text_font: font_heading
               - label:
                   x: 18
                   y: 150
-                  text: "Stromvorgabe (Ist)"
+                  text: "Stromvorgabe"
                   styles: muted_text
               - label:
                   id: current_limit_value
-                  x: 214
+                  x: 142
                   y: 146
                   text: "-- A"
                   text_font: font_heading
         - obj:
             x: 12
             y: 286
-            width: 776
+            width: 568
             height: 118
             styles: card_style
             widgets:
@@ -252,10 +264,11 @@ lvgl:
                   id: state_description
                   x: 18
                   y: 42
-                  width: 736
+                  width: 528
                   height: 64
                   long_mode: WRAP
                   text: "Warte auf aktuelle Wallbox-Daten …"
+        - obj: !include widgets/battery_bank.yaml
 
     - id: page_phases
       styles: page_style

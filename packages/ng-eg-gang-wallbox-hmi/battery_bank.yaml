@@ -1,0 +1,106 @@
+# ==============================================================================
+# BATTERY BANK MONITORING
+# ==============================================================================
+#
+# Aggregate HA entities from the reference charger's shared/battery-bank.yaml.
+# Monitoring only: these values must not influence wallbox control eligibility.
+# Individual batteries and the reference Battery detail page are not imported.
+# ==============================================================================
+
+substitutions:
+  battery_bank_voltage_entity: sensor.solar_battery_bank_reported_bank_voltage
+  battery_bank_current_entity: sensor.solar_battery_bank_reported_bank_current
+  battery_bank_power_entity: sensor.solar_battery_bank_reported_bank_power
+  battery_bank_soc_entity: sensor.solar_battery_bank_reported_bank_state_of_charge
+  battery_bank_temperature_entity: sensor.solar_battery_bank_reported_bank_temperature
+  battery_bank_state_entity: sensor.solar_battery_bank_reported_bank_state
+  # The reference HA entity reports W; the display uses kW.
+  battery_bank_power_scale_to_kw: "0.001"
+
+sensor:
+  - platform: homeassistant
+    id: battery_bank_voltage
+    entity_id: ${battery_bank_voltage_entity}
+    internal: true
+    unit_of_measurement: V
+    accuracy_decimals: 2
+  - platform: homeassistant
+    id: battery_bank_current
+    entity_id: ${battery_bank_current_entity}
+    internal: true
+    unit_of_measurement: A
+    accuracy_decimals: 1
+  - platform: homeassistant
+    id: battery_bank_power
+    entity_id: ${battery_bank_power_entity}
+    internal: true
+    unit_of_measurement: kW
+    accuracy_decimals: 3
+    filters:
+      - multiply: ${battery_bank_power_scale_to_kw}
+  - platform: homeassistant
+    id: battery_bank_soc
+    entity_id: ${battery_bank_soc_entity}
+    internal: true
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+  - platform: homeassistant
+    id: battery_bank_temperature
+    entity_id: ${battery_bank_temperature_entity}
+    internal: true
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+
+text_sensor:
+  - platform: homeassistant
+    id: battery_bank_state
+    entity_id: ${battery_bank_state_entity}
+    internal: true
+
+script:
+  - id: refresh_battery_bank
+    then:
+      - lambda: |-
+          const bool online = id(wallbox_api).is_connected_with_state_subscription();
+          // Match the reference card: only show a complete, valid bank snapshot.
+          const bool available = online &&
+            std::isfinite(id(battery_bank_soc).state) &&
+            std::isfinite(id(battery_bank_power).state) &&
+            std::isfinite(id(battery_bank_voltage).state) &&
+            std::isfinite(id(battery_bank_current).state) &&
+            std::isfinite(id(battery_bank_temperature).state) &&
+            wallbox_ui::valid_text(id(battery_bank_state).state);
+          wallbox_ui::value_label(id(battery_soc_value),
+            available ? id(battery_bank_soc).state : NAN, 1, "%");
+          wallbox_ui::value_label(id(battery_power_value),
+            available ? id(battery_bank_power).state : NAN, 3, "kW");
+          wallbox_ui::value_label(id(battery_voltage_value),
+            available ? id(battery_bank_voltage).state : NAN, 2, "V");
+          wallbox_ui::value_label(id(battery_current_value),
+            available ? id(battery_bank_current).state : NAN, 1, "A");
+          wallbox_ui::value_label(id(battery_temperature_value),
+            available ? id(battery_bank_temperature).state : NAN, 1, "°C");
+
+          const auto &state = id(battery_bank_state).state;
+          const char *text = "Keine Daten";
+          uint32_t color = 0x9AAAB8;
+          if (!online) {
+            text = "HA offline";
+            color = 0xFFB65C;
+          } else if (available) {
+            text = state.c_str();
+            color = 0xFFB65C;
+            if (state == "Charging" || state == "charging") {
+              text = "Lädt";
+              color = 0x68E0A0;
+            } else if (state == "Discharging" || state == "discharging") {
+              text = "Entlädt";
+              color = 0xFF6060;
+            } else if (state == "Idle" || state == "idle" ||
+                       state == "Standby" || state == "standby") {
+              text = "Bereitschaft";
+              color = 0x9AAAB8;
+            }
+          }
+          lv_label_set_text(id(battery_state_value), text);
+          lv_obj_set_style_text_color(id(battery_state_value), lv_color_hex(color), LV_PART_MAIN);

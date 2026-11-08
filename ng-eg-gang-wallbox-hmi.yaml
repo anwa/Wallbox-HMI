@@ -3,6 +3,7 @@
 packages:
   display_hardware: !include packages/ng-eg-gang-wallbox-hmi/display/hardware.yaml
   homeassistant: !include packages/ng-eg-gang-wallbox-hmi/homeassistant.yaml
+  battery_bank: !include packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml
   display_ui: !include packages/ng-eg-gang-wallbox-hmi/display/ui.yaml
   display_runtime: !include packages/ng-eg-gang-wallbox-hmi/display/runtime.yaml
 

@@ -27,7 +27,9 @@ Eine feste Titelzeile zeigt Uhrzeit und HA-Verbindung; unten bleiben vier
 Navigationsbuttons auf allen Seiten sichtbar:
 
 - **Übersicht:** Ladeleistung, Ladezustand mit HA-Statustext, geladene Energie,
-  PCB-Temperatur und zurückgemeldete Stromvorgabe.
+  PCB-Temperatur und zurückgemeldete Stromvorgabe. Rechts zeigt die Karte
+  **BATTERY BANK** den SOC, Leistung, Spannung, Strom, Temperatur und Betriebszustand
+  der Solar-Batteriebank. Eine separate Battery-Unterseite gibt es nicht.
 - **Phasen:** Spannung und Strom für L1, L2 und L3.
 - **Trends:** umschaltbare Leistung, Spannung, Strom und PCB-Temperatur.
   Spannung/Strom enthalten jeweils drei farbige Phasenkurven.
@@ -35,6 +37,10 @@ Navigationsbuttons auf allen Seiten sichtbar:
   HA-Helfer `input_select.wallbox_max_current_buttons`. Auswahl im Helfer und
   Wallbox-Rückmeldung werden getrennt dargestellt. Eine erfolgreiche HA-Anfrage
   bestätigt noch nicht, dass die Wallbox den Strom bereits übernommen hat.
+
+Die Batteriebank nutzt die sechs aggregierten HA-Entities `sensor.solar_battery_bank_reported_bank_*` aus dem Referenzprojekt. Ihre Zuordnung steht als `battery_bank_*_entity`-Substitutionen in `packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml` und kann bei Bedarf in der Haupt-YAML überschrieben werden. Die Quellleistung wird wie im Referenzprojekt von W nach kW umgerechnet (`battery_bank_power_scale_to_kw: "0.001"`). Diese Entities sind nicht Teil des ausschließlich wallboxbezogenen Exports `wallbox-entities.json`.
+
+Die Batteriekarte ist rein lesend und beeinflusst keine Wallbox-Bedienfreigabe. Wie im Referenzprojekt werden ihre Werte nur bei vollständig verfügbaren Bankdaten angezeigt; andernfalls erscheinen `--` und „Keine Daten“ beziehungsweise „HA offline“. Ein HA-Ausfall verwirft zwischengespeicherte Batteriewerte, damit sie nach der Wiederverbindung nicht als neue Messwerte erscheinen.
 
 Trends werden alle 10 Sekunden lokal im RAM aufgenommen (60 Minuten, 361 Punkte).
 Sie beginnen nach jedem Neustart leer; es wird keine HA-Historie nachgeladen.
