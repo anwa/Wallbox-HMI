@@ -19,7 +19,7 @@
 
 ## Erste GUI-Version
 
-Die Firmware-Konfiguration liegt in `ng-eg-wallbox-hmi.yaml`. Display und GT911-Touch
+Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und GT911-Touch
 sind für das Waveshare-Board eingerichtet. Die Gestaltung orientiert sich am
 Referenzprojekt `D:\Workspace\esphome-r4875g1-3phase-charger`.
 
@@ -52,12 +52,15 @@ Benötigt wird **ESPHome ab 2026.10.2**. Eine lokale, nicht versionierte
 `web_server_password`, `api_encryption_key`.
 
 ```sh
-esphome config ng-eg-wallbox-hmi.yaml
-esphome compile ng-eg-wallbox-hmi.yaml
+esphome config ng-eg-gang-wallbox-hmi.yaml
+esphome compile ng-eg-gang-wallbox-hmi.yaml
 ```
 
-Beim Übertragen auf den Ziel-PC die Haupt-YAML, den gesamten Ordner `packages/`
-sowie `wallbox_ui.h` und `trend_buffer.h` zusammen übernehmen. Schriftarten werden
+Beim Übertragen auf den Ziel-PC die Haupt-YAML und den gesamten Geräteordner
+`packages/ng-eg-gang-wallbox-hmi/` einschließlich beider C++-Header zusammen
+übernehmen. Unter `packages/` liegen gerätespezifische Dateien immer in einem
+Unterordner mit exakt dem ESPHome-Gerätenamen, damit mehrere Geräte dieselbe
+ESPHome-Installation konfliktfrei nutzen können. Schriftarten werden
 beim Build heruntergeladen; im laufenden Betrieb benötigt die GUI kein Internet.
 Die Weboberfläche und der lokale Bildschirm verwenden unterschiedliche Oberflächen.
 
@@ -78,7 +81,7 @@ Der Trendpuffer hat unabhängige C++-Tests (C++17-Compiler erforderlich). Beispi
 für PowerShell mit GCC; die Testdatei bleibt außerhalb des Repositorys:
 
 ```powershell
-g++ -std=c++17 -I. tests/trend_buffer_test.cpp -o "$env:TEMP/wallbox-trend-test.exe"
+g++ -std=c++17 -Ipackages/ng-eg-gang-wallbox-hmi tests/trend_buffer_test.cpp -o "$env:TEMP/wallbox-trend-test.exe"
 & "$env:TEMP/wallbox-trend-test.exe"
 ```
 

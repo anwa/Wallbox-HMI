@@ -7,6 +7,7 @@ import yaml  # Installed with ESPHome.
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DEVICE_PACKAGE = ROOT / "packages/ng-eg-gang-wallbox-hmi"
 
 
 class HomeAssistantContractTests(unittest.TestCase):
@@ -15,7 +16,7 @@ class HomeAssistantContractTests(unittest.TestCase):
         export = json.loads((ROOT / "wallbox-entities.json").read_text(encoding="utf-8"))
         cls.entities = {entity["entity_id"]: entity for entity in export["entities"]}
         cls.imports = yaml.safe_load(
-            (ROOT / "packages/homeassistant.yaml").read_text(encoding="utf-8")
+            (DEVICE_PACKAGE / "homeassistant.yaml").read_text(encoding="utf-8")
         )
 
     def test_imported_entities_exist_and_remain_internal(self):
@@ -35,7 +36,7 @@ class HomeAssistantContractTests(unittest.TestCase):
     def test_current_choices_match_existing_helper(self):
         helper = self.entities["input_select.wallbox_max_current_buttons"]
         self.assertEqual(helper["attributes"]["options"], ["0A", "6A", "10A", "12A", "16A"])
-        ui = (ROOT / "packages/display/ui.yaml").read_text(encoding="utf-8")
+        ui = (DEVICE_PACKAGE / "display/ui.yaml").read_text(encoding="utf-8")
         for option in helper["attributes"]["options"]:
             self.assertIn(f"option: {option},", ui)
 

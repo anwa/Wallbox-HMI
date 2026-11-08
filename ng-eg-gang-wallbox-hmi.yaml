@@ -1,18 +1,18 @@
 # Target: Waveshare ESP32-S3-Touch-LCD-7 (800x480, GT911, CH422G)
 
 packages:
-  display_hardware: !include packages/display/hardware.yaml
-  homeassistant: !include packages/homeassistant.yaml
-  display_ui: !include packages/display/ui.yaml
-  display_runtime: !include packages/display/runtime.yaml
+  display_hardware: !include packages/ng-eg-gang-wallbox-hmi/display/hardware.yaml
+  homeassistant: !include packages/ng-eg-gang-wallbox-hmi/homeassistant.yaml
+  display_ui: !include packages/ng-eg-gang-wallbox-hmi/display/ui.yaml
+  display_runtime: !include packages/ng-eg-gang-wallbox-hmi/display/runtime.yaml
 
 esphome:
-  name: ng-eg-wallbox-hmi
-  friendly_name: NG|EG|Wallbox-HMI
+  name: ng-eg-gang-wallbox-hmi
+  friendly_name: NG|EG|Gang|Wallbox-HMI
   min_version: 2026.10.2
   includes:
-    - trend_buffer.h
-    - wallbox_ui.h
+    - packages/ng-eg-gang-wallbox-hmi/trend_buffer.h
+    - packages/ng-eg-gang-wallbox-hmi/wallbox_ui.h
   build_flags:
     - -D LV_USE_CHART=1
 
@@ -182,7 +182,7 @@ captive_portal:
 # SNTP provides Europe/Berlin local time for shared HMI presentation and other
 # time-dependent target functions.
 #
-# Header rendering is handled by packages/display/runtime.yaml.
+# Header rendering is handled by the device package's display/runtime.yaml.
 # ==============================================================================
 
 time:
