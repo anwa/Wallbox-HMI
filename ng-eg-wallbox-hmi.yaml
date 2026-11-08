@@ -1,0 +1,205 @@
+# Board: Generic ESP32-S3 Board (Generic)
+# Definition: definitions/boards/generic-esp32s3/manifest.yaml
+
+esphome:
+  name: ng-eg-wallbox-hmi
+  friendly_name: NG|EG|Wallbox-HMI
+  min_version: 2026.10.2
+
+esp32:
+  variant: esp32s3
+
+  flash_size: 16MB
+  flash_mode: qio
+
+  # Waveshare recommends 120 MHz Flash and PSRAM for maximum display/LVGL
+  # performance on this board. The current ESPHome/ESP-IDF configuration rejects
+  # 120 MHz with octal PSRAM ("PSRAM 120MHz is not supported in octal mode").
+  #
+  # Do not force this through experimental sdkconfig options while ESPHome does
+  # not support the configuration cleanly. Re-evaluate 120 MHz Flash/PSRAM when
+  # stable ESPHome support becomes available, as this may provide a meaningful
+  # performance improvement for LVGL and PSRAM-heavy workloads.
+  #
+  # Waveshare's ESP-IDF example also enables CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+  # for its 120 MHz configuration, but this is intentionally not enabled here.
+  flash_frequency: 80MHz
+
+  cpu_frequency: 240MHz
+
+  toolchain: esp-idf
+
+  framework:
+    type: esp-idf
+    version: recommended
+    advanced:
+      execute_from_psram: true
+      compiler_optimization: PERF
+    sdkconfig_options:
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: y
+
+# ==============================================================================
+# EXTERNAL PSRAM
+# ==============================================================================
+#
+# Enables the ESP32-S3 N16R8 module's 8 MB Octal PSRAM at 80 MHz.
+#
+# LVGL framebuffer allocations and other large runtime buffers may use this
+# external memory.
+# ==============================================================================
+
+psram:
+  mode: octal
+
+  # Keep this aligned with the Flash configuration above. 120 MHz remains a
+  # future performance option once ESPHome supports octal PSRAM at that speed
+  # without requiring unsupported or experimental workarounds.
+  speed: 80MHz
+
+  ignore_not_found: false
+
+# ==============================================================================
+# LOGGING
+# ==============================================================================
+#
+# Debug logging is enabled for firmware, hardware and runtime diagnostics.
+# ==============================================================================
+
+logger:
+  level: DEBUG
+
+# ==============================================================================
+# LOCAL ESPHOME WEB SERVER
+# ==============================================================================
+#
+# Provides direct browser access to the target's exposed entities and controls
+# whenever local IP networking is available.
+#
+# All web assets are stored locally so the interface does not depend on
+# internet access.
+# ==============================================================================
+
+web_server:
+  version: 3
+  port: 80
+
+  # Keep all web UI assets on the ESP32 so the interface remains usable
+  # without internet access, including during blackstart scenarios.
+  local: true
+
+  # Internal helper entities are implementation details and should not be
+  # exposed through the browser UI.
+  include_internal: false
+
+  # Protect browser access to charger controls and diagnostics.
+  auth:
+    username: !secret web_server_username
+    password: !secret web_server_password
+    type: digest
+
+  # Native ESPHome OTA is already configured separately. Do not expose
+  # firmware upload through the normal web interface.
+  ota: false
+
+# ==============================================================================
+# HOME ASSISTANT NATIVE API
+# ==============================================================================
+#
+# Provides the encrypted native ESPHome integration for Home Assistant.
+#
+# Network loss must not cause either target to reboot automatically.
+# ==============================================================================
+
+api:
+  reboot_timeout: 0s
+  encryption:
+    key: !secret api_encryption_key
+
+# ==============================================================================
+# OVER-THE-AIR FIRMWARE UPDATE
+# ==============================================================================
+#
+# Enables authenticated ESPHome OTA updates after the initial USB installation.
+# ==============================================================================
+
+ota:
+  - platform: esphome
+    encryption:
+
+# ==============================================================================
+# WI-FI
+# ==============================================================================
+#
+# Wi-Fi credentials are provided through secrets.yaml.
+#
+# Power saving and automatic reboot on connection loss are disabled because
+# both targets are permanently powered and should remain locally stable when
+# infrastructure Wi-Fi is unavailable.
+# ==============================================================================
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  power_save_mode: none
+  reboot_timeout: 0s
+  ap:
+    ssid: NG|EG|Wallbox-H Fallback Hotspot
+    password: !secret fallback_ap_password
+
+# ==============================================================================
+# FALLBACK CAPTIVE PORTAL
+# ==============================================================================
+#
+# Works with the fallback access point above if the configured infrastructure
+# Wi-Fi cannot be reached.
+# ==============================================================================
+
+captive_portal:
+
+  # ==============================================================================
+# TIME SYNCHRONIZATION
+# ==============================================================================
+#
+# SNTP provides Europe/Berlin local time for shared HMI presentation and other
+# time-dependent target functions.
+#
+# Header rendering is handled separately by display/header.yaml.
+# ==============================================================================
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Berlin
+    servers:
+      - 0.de.pool.ntp.org
+      - 1.de.pool.ntp.org
+      - 2.de.pool.ntp.org
+
+    on_time_sync:
+      then:
+        - lambda: |-
+            auto now = id(sntp_time).now();
+
+            ESP_LOGI(
+              "time",
+              "SNTP synchronized: %02d.%02d.%04d %02d:%02d:%02d",
+              now.day_of_month,
+              now.month,
+              now.year,
+              now.hour,
+              now.minute,
+              now.second
+            );
+
+# ==============================================================================
+# ESPHOME DEBUG METRICS
+# ==============================================================================
+#
+# Enables the shared ESPHome debug component used by both V6 targets.
+#
+# Diagnostic entities consuming these metrics are declared in
+# shared/local-diagnostics.yaml.
+# ==============================================================================
+
+debug:
+  update_interval: 5s
