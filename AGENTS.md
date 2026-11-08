@@ -2,7 +2,7 @@
 
 - Antworte mir immer auf Deutsch. Code, Code-Kommentare und Commits bleiben englisch.
 - Deutsche Texte in der App immer mit echten Umlauten: ä, ö, ü, ß. Nie ae, oe, ue oder ss als Ersatz.
-- Commits im Format `feat: ...` oder `fix: ...`. Niemals pushen.
+- Lokale Commits nur auf ausdrücklichen Auftrag, im Format `feat: ...`, `fix: ...` oder `docs: ...`. Niemals pushen. GitHub und GitHub-Integrationen nur lesend verwenden; keine Remote-Änderungen vornehmen.
 - Tests, Konfigurationsvalidierung und Kompilierung übernimmt bis auf Weiteres der Nutzer. Nicht eigenständig ausführen oder dafür Toolchains installieren; nur auf ausdrückliche Aufforderung. Die lokale ESP-Desktop-Software wird später besprochen.
 
 # Project context
@@ -13,6 +13,13 @@
 - The display GUI must use LVGL through ESPHome.
 - GUI reference project: `D:\Workspace\esphome-r4875g1-3phase-charger`. This is outside the repository; obtain permission before accessing it, as required by `opencode.json`.
 
+# Development and documentation
+
+- Comment/documentation-only tasks must not change IDs, values, timing, entities or control flow. Report functional defects separately rather than silently fixing them.
+- Extend the existing hardware, HA-import, presentation and command boundaries instead of adding competing implementations. The reference project's dual-target architecture is not a requirement for this single-target HMI.
+- YAML comments stay English and explain non-obvious hardware dependencies, timing, failure behavior and implementation choices. Small include fragments should document their required substitution variables; C++ lambda comments use `//`, not YAML separators.
+- Keep comments and file references aligned with the implementation in the same change. README content explains setup, operation and limitations; implementation-local details belong beside the code. Distinguish working features from planned ones, and do not reformat unrelated documentation.
+
 # Firmware
 
 - Target hardware is the Waveshare **ESP32-S3-Touch-LCD-7** (touch model, not 7B/7C); see `README.md` and https://docs.waveshare.com/ESP32-S3-Touch-LCD-7 for wiring. Backlight and touch reset use the CH422G expander; USB and CAN share GPIO19/20 and are selected via CH422G EXIO5.
@@ -21,8 +28,10 @@
 - All device-specific runtime files, including C++ headers, must live under `packages/<esphome.name>/` to avoid collisions with other devices in the same ESPHome installation. For this device use `packages/ng-eg-gang-wallbox-hmi/`: `homeassistant.yaml` owns entity imports, `display/` owns hardware, LVGL widgets and runtime. Transfer this complete device folder with the main YAML; `esphome.includes` paths remain relative to the main configuration.
 - Trends use native LVGL 9.5 charts (`LV_USE_CHART=1`), not an ESPHome chart widget. `trend_buffer.h` owns a RAM-only 361-point/10-second history; `wallbox_ui.h` renders it. Missing readings must stay gaps. Use custom font glyphs for German text; built-in Montserrat lacks umlauts.
 - Current requests go only through the existing HA input-select and require confirmation, live HA states and HA action permission. HA action success is not physical wallbox acknowledgement; do not add optimistic state updates or offline command replay.
+- This HMI is not a safety controller or independent blackstart controller. Keep HA loss visible and remote controls disabled when required state is unavailable; never substitute snapshot values from `wallbox-entities.json` or fake healthy/zero readings for missing live data. Do not bypass the existing HA/wallbox command path or weaken safety constraints during refactors.
 - Preserve `reboot_timeout: 0s` under both `api` and `wifi`, plus `wifi.power_save_mode: none`: local operation must survive Home Assistant and infrastructure Wi-Fi outages without timed reboots.
 - Preserve the local web UI's offline assets (`local: true`), digest authentication, hidden internal entities, and disabled web firmware uploads; native ESPHome OTA is separate.
+- `esphome.min_version` is the ESPHome toolchain requirement, not this project's firmware version. No project firmware-version scheme is established; do not introduce automatic version bumps. Any future canonical version file must stay inside the device package folder.
 
 # Verification and secrets
 
