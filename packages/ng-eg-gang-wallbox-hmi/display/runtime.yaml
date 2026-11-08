@@ -71,7 +71,7 @@ script:
           lv_label_set_text(id(header_connection), online ? "HA verbunden" : "HA offline");
           lv_obj_set_style_text_color(id(header_connection),
             lv_color_hex(online ? 0x68E0A0 : 0xFFB65C), LV_PART_MAIN);
-          const auto now = id(sntp_time).now();
+          auto now = id(sntp_time).now();
           lv_label_set_text(id(header_clock), now.is_valid() ?
             now.strftime("%d.%m.%Y  %H:%M").c_str() : "--.--.----  --:--");
 
