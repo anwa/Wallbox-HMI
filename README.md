@@ -1,5 +1,11 @@
 # Wallbox-HMI
 
+## Lokaler Merge-/Release-Command
+
+`/merge` führt den aktuellen, bereits committeten Aufgabenbranch per Fast-forward nach `main`, erhöht standardmäßig die Minor-Version, erstellt einen annotierten lokalen Tag `vX.Y.Z` und löscht danach genau diesen gemergten Aufgabenbranch. Alternativen: `/merge patch`, `/merge major`, `/merge 1.2.3` oder `/merge none` ohne Versionsänderung und Tag. Bei uncommitteten Änderungen oder nicht möglichem Fast-forward stoppt der Command. Er pusht nichts und führt keine Tests, Builds oder Deployments aus.
+
+Eine Projektversion ist noch nicht initialisiert. Beim ersten versionierten Aufruf legt der Command `packages/ng-eg-gang-wallbox-hmi/version.yaml` als zentrale Quelle an und bindet sie in die ESPHome-Projektmetadaten ein. Ohne vorhandene Version oder Release-Tags beginnt der Standardlauf mit `0.1.0`. `esphome.min_version` bleibt davon unabhängig. Die Versionsvorbereitung wird auf dem Aufgabenbranch committed, nicht auf `main`; ein Tag ist keine Bestätigung eines Hardwaretests.
+
 ## Zielhardware
 
 **Waveshare ESP32-S3-Touch-LCD-7** (Touch-Version, nicht 7B oder 7C).

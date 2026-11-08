@@ -33,7 +33,7 @@
 - This HMI is not a safety controller or independent blackstart controller. Keep HA loss visible and remote controls disabled when required state is unavailable; never substitute snapshot values from `wallbox-entities.json` or fake healthy/zero readings for missing live data. Do not bypass the existing HA/wallbox command path or weaken safety constraints during refactors.
 - Preserve `reboot_timeout: 0s` under both `api` and `wifi`, plus `wifi.power_save_mode: none`: local operation must survive Home Assistant and infrastructure Wi-Fi outages without timed reboots.
 - Preserve the local web UI's offline assets (`local: true`), digest authentication, hidden internal entities, and disabled web firmware uploads; native ESPHome OTA is separate.
-- `esphome.min_version` is the ESPHome toolchain requirement, not this project's firmware version. No project firmware-version scheme is established; do not introduce automatic version bumps. Any future canonical version file must stay inside the device package folder.
+- `esphome.min_version` is the ESPHome toolchain requirement, not this project's firmware version. `/merge` explicitly authorizes a local fast-forward merge, a release-preparation commit on the task branch, version/tag creation (minor by default) and deletion of that merged task branch; it never authorizes pushes or tests. Its first versioned invocation initializes `packages/ng-eg-gang-wallbox-hmi/version.yaml` and ESPHome project metadata; without an existing version/tag the first default release is `0.1.0`. Do not bump versions outside an explicit release request; follow `.opencode/commands/merge.md`.
 
 # Verification and secrets
 
