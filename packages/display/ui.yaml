@@ -1,0 +1,396 @@
+# Custom fonts include German umlauts; built-in Montserrat does not.
+# Google Fonts are downloaded at build time, never by the running display.
+font:
+  - file: gfonts://Roboto@500
+    id: font_body
+    size: 18
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["ÄÖÜäöüß°€…–·"]
+  - file: gfonts://Roboto@500
+    id: font_heading
+    size: 24
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["ÄÖÜäöüß°€…–·"]
+  - file: gfonts://Roboto@500
+    id: font_value
+    size: 48
+    bpp: 4
+    glyphsets: [GF_Latin_Kernel]
+    glyphs: ["ÄÖÜäöüß°€…–·"]
+
+lvgl:
+  default_font: font_body
+  style_definitions:
+    - id: page_style
+      bg_color: 0x101418
+      bg_opa: COVER
+      text_color: 0xE7EEF4
+      border_width: 0
+      pad_all: 0
+    - id: card_style
+      bg_color: 0x171F27
+      bg_opa: COVER
+      border_color: 0x303D48
+      border_width: 1
+      radius: 12
+      pad_all: 0
+      text_color: 0xE7EEF4
+    - id: muted_text
+      text_color: 0x9AAAB8
+    - id: button_style
+      bg_color: 0x202D38
+      bg_opa: COVER
+      border_color: 0x3A4C5A
+      border_width: 1
+      radius: 8
+      text_color: 0xE7EEF4
+      shadow_width: 0
+  theme:
+    button:
+      pressed:
+        bg_color: 0x36505A
+      checked:
+        bg_color: 0x245462
+        text_color: 0x69E3EE
+      disabled:
+        bg_color: 0x161B20
+        text_color: 0x68727B
+
+  top_layer:
+    widgets:
+      - obj:
+          x: 0
+          y: 0
+          width: 800
+          height: 58
+          bg_color: 0x171D23
+          bg_opa: COVER
+          border_width: 0
+          radius: 0
+          pad_all: 0
+          widgets:
+            - label:
+                x: 16
+                align: LEFT_MID
+                text: "Wallbox"
+                text_font: font_heading
+                text_color: 0xE7EEF4
+            - label:
+                id: header_clock
+                align: CENTER
+                text: "--.--.----  --:--"
+                text_color: 0xCBD7E0
+            - label:
+                id: header_connection
+                x: -16
+                align: RIGHT_MID
+                text: "HA offline"
+                text_color: 0xFFB65C
+
+      - button: !include
+          file: widgets/navigation.yaml
+          vars: {id: nav_overview, x: 12, page_id: page_overview, index: 0, title: Übersicht}
+      - button: !include
+          file: widgets/navigation.yaml
+          vars: {id: nav_phases, x: 209, page_id: page_phases, index: 1, title: Phasen}
+      - button: !include
+          file: widgets/navigation.yaml
+          vars: {id: nav_trends, x: 406, page_id: page_trends, index: 2, title: Trends}
+      - button: !include
+          file: widgets/navigation.yaml
+          vars: {id: nav_control, x: 603, page_id: page_control, index: 3, title: Ladestrom}
+
+      # Confirmation blocks navigation and prevents accidental current changes.
+      - obj:
+          id: control_dialog
+          hidden: true
+          x: 0
+          y: 0
+          width: 800
+          height: 480
+          bg_color: 0x101418
+          bg_opa: 90%
+          pad_all: 0
+          border_width: 0
+          radius: 0
+          widgets:
+            - obj:
+                align: CENTER
+                width: 570
+                height: 250
+                styles: card_style
+                widgets:
+                  - label:
+                      id: confirm_text
+                      x: 24
+                      y: 24
+                      width: 522
+                      text_font: font_heading
+                      text: "Ladestrom ändern?"
+                  - label:
+                      x: 24
+                      y: 86
+                      width: 522
+                      text: "Anfrage über Home Assistant.\n0 A ist kein Not-Aus."
+                      styles: muted_text
+                  - button:
+                      x: 24
+                      y: 170
+                      width: 246
+                      height: 54
+                      styles: button_style
+                      widgets:
+                        - label:
+                            align: CENTER
+                            text: "Abbrechen"
+                      on_click:
+                        - lvgl.widget.hide: control_dialog
+                  - button:
+                      x: 294
+                      y: 170
+                      width: 246
+                      height: 54
+                      styles: button_style
+                      widgets:
+                        - label:
+                            align: CENTER
+                            text: "Bestätigen"
+                      on_click:
+                        - lvgl.widget.hide: control_dialog
+                        - script.execute: request_current
+
+  pages:
+    - id: page_overview
+      styles: page_style
+      widgets:
+        - obj:
+            x: 12
+            y: 70
+            width: 380
+            height: 204
+            styles: card_style
+            widgets:
+              - label:
+                  x: 20
+                  y: 16
+                  text: "LADELEISTUNG"
+                  styles: muted_text
+              - label:
+                  id: power_value
+                  x: 20
+                  y: 52
+                  text: "-- kW"
+                  text_font: font_value
+                  text_color: 0x4DD9E8
+              - label:
+                  id: state_code
+                  x: 20
+                  y: 132
+                  text: "Ladezustand: --"
+                  text_font: font_heading
+              - label:
+                  x: 20
+                  y: 172
+                  text: "Heidelberg Energy Control · 11 kW"
+                  styles: muted_text
+        - obj:
+            x: 404
+            y: 70
+            width: 384
+            height: 204
+            styles: card_style
+            widgets:
+              - label:
+                  x: 18
+                  y: 16
+                  text: "Geladene Energie"
+                  styles: muted_text
+              - label:
+                  id: energy_value
+                  x: 18
+                  y: 44
+                  text: "-- kWh"
+                  text_font: font_heading
+                  text_color: 0x68E0A0
+              - label:
+                  x: 18
+                  y: 94
+                  text: "PCB-Temperatur"
+                  styles: muted_text
+              - label:
+                  id: temperature_value
+                  x: 214
+                  y: 90
+                  text: "-- °C"
+                  text_font: font_heading
+              - label:
+                  x: 18
+                  y: 150
+                  text: "Stromvorgabe (Ist)"
+                  styles: muted_text
+              - label:
+                  id: current_limit_value
+                  x: 214
+                  y: 146
+                  text: "-- A"
+                  text_font: font_heading
+        - obj:
+            x: 12
+            y: 286
+            width: 776
+            height: 118
+            styles: card_style
+            widgets:
+              - label:
+                  x: 18
+                  y: 12
+                  text: "STATUS · HOME ASSISTANT"
+                  styles: muted_text
+              - label:
+                  id: state_description
+                  x: 18
+                  y: 42
+                  width: 736
+                  height: 64
+                  long_mode: WRAP
+                  text: "Warte auf aktuelle Wallbox-Daten …"
+
+    - id: page_phases
+      styles: page_style
+      widgets:
+        - obj: !include
+            file: widgets/phase.yaml
+            vars: {phase: 1, x: 12, color: 0x4DD9E8}
+        - obj: !include
+            file: widgets/phase.yaml
+            vars: {phase: 2, x: 274, color: 0x68E0A0}
+        - obj: !include
+            file: widgets/phase.yaml
+            vars: {phase: 3, x: 536, color: 0xFFB65C}
+        - label:
+            x: 24
+            y: 364
+            width: 752
+            text: "Effektivwerte je Phase · -- bedeutet: kein gültiger Messwert"
+            styles: muted_text
+
+    - id: page_trends
+      styles: page_style
+      widgets:
+        - button: !include
+            file: widgets/trend_button.yaml
+            vars: {id: trend_power, x: 12, selection: 0, title: Leistung}
+        - button: !include
+            file: widgets/trend_button.yaml
+            vars: {id: trend_voltage, x: 209, selection: 1, title: Spannung}
+        - button: !include
+            file: widgets/trend_button.yaml
+            vars: {id: trend_current, x: 406, selection: 2, title: Strom}
+        - button: !include
+            file: widgets/trend_button.yaml
+            vars: {id: trend_temperature, x: 603, selection: 3, title: Temperatur}
+        - obj:
+            id: chart_host
+            x: 12
+            y: 124
+            width: 776
+            height: 242
+            styles: card_style
+            widgets:
+              - label:
+                  id: chart_title
+                  x: 18
+                  y: 8
+                  text: "Leistung (kW)"
+              - label:
+                  id: chart_axis_top
+                  x: 2
+                  y: 34
+                  width: 50
+                  text_align: RIGHT
+                  text: "12"
+                  styles: muted_text
+              - label:
+                  id: chart_axis_bottom
+                  x: 2
+                  y: 180
+                  width: 50
+                  text_align: RIGHT
+                  text: "0"
+                  styles: muted_text
+              - label:
+                  x: 58
+                  y: 210
+                  text: "-60 min"
+                  styles: muted_text
+              - label:
+                  x: 366
+                  y: 210
+                  text: "-30 min"
+                  styles: muted_text
+              - label:
+                  x: 706
+                  y: 210
+                  text: "jetzt"
+                  styles: muted_text
+        - label:
+            id: chart_legend
+            x: 24
+            y: 377
+            width: 750
+            text: "Warte auf Messwerte – keine Historie vorhanden"
+            styles: muted_text
+
+    - id: page_control
+      styles: page_style
+      widgets:
+        - obj:
+            x: 12
+            y: 70
+            width: 776
+            height: 334
+            styles: card_style
+            widgets:
+              - label:
+                  x: 20
+                  y: 16
+                  text: "Maximalen Ladestrom anfordern"
+                  text_font: font_heading
+              - label:
+                  id: control_feedback
+                  x: 20
+                  y: 58
+                  width: 730
+                  text: "HA-Auswahl: --  |  Wallbox-Rückmeldung: -- A"
+              - button: !include
+                  file: widgets/current_button.yaml
+                  vars: {id: current_0, x: 20, option: 0A, title: "0 A"}
+              - button: !include
+                  file: widgets/current_button.yaml
+                  vars: {id: current_6, x: 168, option: 6A, title: "6 A"}
+              - button: !include
+                  file: widgets/current_button.yaml
+                  vars: {id: current_10, x: 316, option: 10A, title: "10 A"}
+              - button: !include
+                  file: widgets/current_button.yaml
+                  vars: {id: current_12, x: 464, option: 12A, title: "12 A"}
+              - button: !include
+                  file: widgets/current_button.yaml
+                  vars: {id: current_16, x: 612, option: 16A, title: "16 A"}
+              - label:
+                  id: command_result
+                  x: 20
+                  y: 206
+                  width: 730
+                  height: 52
+                  long_mode: WRAP
+                  text: "Keine Anfrage gesendet."
+                  text_color: 0xFFB65C
+              - label:
+                  x: 20
+                  y: 274
+                  width: 730
+                  text: "HA-Automation setzt die Vorgabe um.\n0 A fordert eine Ladepause an; kein Not-Aus."
+                  styles: muted_text

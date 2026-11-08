@@ -1,0 +1,201 @@
+globals:
+  - id: active_page
+    type: int
+    restore_value: false
+    initial_value: '0'
+  - id: trend_selection
+    type: int
+    restore_value: false
+    initial_value: '0'
+  - id: requested_current_option
+    type: std::string
+    restore_value: false
+    initial_value: '""'
+
+interval:
+  - interval: 1s
+    then:
+      - script.execute: refresh_ui
+  - interval: 10s
+    then:
+      - lambda: |-
+          const bool online = id(wallbox_api).is_connected_with_state_subscription();
+          wallbox_ui::Trends::Sample sample = {{
+            id(wb_power).state,
+            id(wb_voltage_l1).state, id(wb_voltage_l2).state, id(wb_voltage_l3).state,
+            id(wb_current_l1).state, id(wb_current_l2).state, id(wb_current_l3).state,
+            id(wb_temperature).state
+          }};
+          if (!online) sample.fill(NAN);
+          wallbox_ui::trends().push(sample, millis());
+      - if:
+          condition:
+            lambda: return id(active_page) == 2;
+          then:
+            - script.execute: refresh_trends
+
+script:
+  - id: invalidate_ha_state
+    then:
+      - lambda: |-
+          // Discard cached values so reconnecting cannot revive pre-outage data.
+          for (auto *sensor : {id(wb_power), id(wb_energy), id(wb_temperature),
+                               id(wb_current_limit), id(wb_voltage_l1), id(wb_voltage_l2),
+                               id(wb_voltage_l3), id(wb_current_l1), id(wb_current_l2),
+                               id(wb_current_l3)}) {
+            sensor->publish_state(NAN);
+          }
+          id(wb_state_code).publish_state("");
+          id(wb_state_text).publish_state("");
+          id(wb_current_option).publish_state("");
+          id(requested_current_option).clear();
+
+  - id: select_page
+    parameters:
+      page: int
+    then:
+      - lambda: id(active_page) = page;
+      - script.execute: refresh_ui
+      - if:
+          condition:
+            lambda: return page == 2;
+          then:
+            - script.execute: refresh_trends
+
+  - id: refresh_ui
+    then:
+      - lambda: |-
+          using wallbox_ui::value_label;
+          using wallbox_ui::valid_text;
+          const bool online = id(wallbox_api).is_connected_with_state_subscription();
+          lv_label_set_text(id(header_connection), online ? "HA verbunden" : "HA offline");
+          lv_obj_set_style_text_color(id(header_connection),
+            lv_color_hex(online ? 0x68E0A0 : 0xFFB65C), LV_PART_MAIN);
+          const auto now = id(sntp_time).now();
+          lv_label_set_text(id(header_clock), now.is_valid() ?
+            now.strftime("%d.%m.%Y  %H:%M").c_str() : "--.--.----  --:--");
+
+          value_label(id(power_value), online ? id(wb_power).state : NAN, 2, "kW");
+          value_label(id(energy_value), online ? id(wb_energy).state : NAN, 2, "kWh");
+          value_label(id(temperature_value), online ? id(wb_temperature).state : NAN, 1, "°C");
+          value_label(id(current_limit_value), online ? id(wb_current_limit).state : NAN, 1, "A");
+          lv_obj_t *voltage_labels[] = {
+            id(voltage_l1_value), id(voltage_l2_value), id(voltage_l3_value)
+          };
+          lv_obj_t *current_labels[] = {
+            id(current_l1_value), id(current_l2_value), id(current_l3_value)
+          };
+          const float voltages[] = {
+            id(wb_voltage_l1).state, id(wb_voltage_l2).state, id(wb_voltage_l3).state
+          };
+          const float currents[] = {
+            id(wb_current_l1).state, id(wb_current_l2).state, id(wb_current_l3).state
+          };
+          for (size_t i = 0; i < 3; ++i) {
+            value_label(voltage_labels[i], online ? voltages[i] : NAN, 0, "V");
+            value_label(current_labels[i], online ? currents[i] : NAN, 1, "A");
+          }
+          lv_label_set_text_fmt(id(state_code), "Ladezustand: %s",
+            online && valid_text(id(wb_state_code).state) ? id(wb_state_code).state.c_str() : "--");
+          lv_label_set_text(id(state_description), !online ?
+            "Home Assistant nicht verbunden. Messwerte und Steuerung sind nicht verfügbar." :
+            valid_text(id(wb_state_text).state) ? id(wb_state_text).state.c_str() :
+            "Ladezustand in Home Assistant nicht verfügbar.");
+
+          const auto &option = id(wb_current_option).state;
+          const bool known_option = option == "0A" || option == "6A" || option == "10A" ||
+                                    option == "12A" || option == "16A";
+          const bool can_control = online && known_option && std::isfinite(id(wb_current_limit).state);
+          std::string feedback = "HA-Auswahl: ";
+          feedback += online && known_option ? option : "--";
+          feedback += "  |  Wallbox-Rückmeldung: ";
+          if (online && std::isfinite(id(wb_current_limit).state)) {
+            char current[32];
+            std::snprintf(current, sizeof(current), "%.1f A", id(wb_current_limit).state);
+            for (char *p = current; *p; ++p) if (*p == '.') *p = ',';
+            feedback += current;
+          } else {
+            feedback += "-- A";
+          }
+          lv_label_set_text(id(control_feedback), feedback.c_str());
+          lv_obj_t *current_buttons[] = {
+            id(current_0), id(current_6), id(current_10), id(current_12), id(current_16)
+          };
+          const char *options[] = {"0A", "6A", "10A", "12A", "16A"};
+          for (size_t i = 0; i < 5; ++i) {
+            if (can_control) lv_obj_remove_state(current_buttons[i], LV_STATE_DISABLED);
+            else lv_obj_add_state(current_buttons[i], LV_STATE_DISABLED);
+            if (online && option == options[i]) lv_obj_add_state(current_buttons[i], LV_STATE_CHECKED);
+            else lv_obj_remove_state(current_buttons[i], LV_STATE_CHECKED);
+          }
+          if (!can_control) lv_obj_add_flag(id(control_dialog), LV_OBJ_FLAG_HIDDEN);
+          lv_obj_t *navigation[] = {id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control)};
+          for (int i = 0; i < 4; ++i) {
+            if (i == id(active_page)) lv_obj_add_state(navigation[i], LV_STATE_CHECKED);
+            else lv_obj_remove_state(navigation[i], LV_STATE_CHECKED);
+          }
+
+  - id: refresh_trends
+    then:
+      - lambda: |-
+          wallbox_ui::trends().render(id(chart_host), id(trend_selection),
+            id(chart_title), id(chart_axis_top), id(chart_axis_bottom), id(chart_legend));
+          lv_obj_t *buttons[] = {
+            id(trend_power), id(trend_voltage), id(trend_current), id(trend_temperature)
+          };
+          for (int i = 0; i < 4; ++i) {
+            if (i == id(trend_selection)) lv_obj_add_state(buttons[i], LV_STATE_CHECKED);
+            else lv_obj_remove_state(buttons[i], LV_STATE_CHECKED);
+          }
+
+  - id: prepare_current
+    parameters:
+      option: string
+    then:
+      - if:
+          condition:
+            lambda: |-
+              return id(wallbox_api).is_connected_with_state_subscription() &&
+                wallbox_ui::valid_text(id(wb_current_option).state) &&
+                std::isfinite(id(wb_current_limit).state);
+          then:
+            - lambda: |-
+                id(requested_current_option) = option;
+                lv_label_set_text_fmt(id(confirm_text), "Ladestrom %s anfordern?", option.c_str());
+            - lvgl.widget.show: control_dialog
+
+  - id: request_current
+    then:
+      - if:
+          condition:
+            lambda: |-
+              const auto &option = id(requested_current_option);
+              return id(wallbox_api).is_connected_with_state_subscription() &&
+                wallbox_ui::valid_text(id(wb_current_option).state) &&
+                std::isfinite(id(wb_current_limit).state) &&
+                (option == "0A" || option == "6A" || option == "10A" ||
+                 option == "12A" || option == "16A");
+          then:
+            - lvgl.label.update:
+                id: command_result
+                text: "Anfrage wird an Home Assistant gesendet …"
+            - homeassistant.action:
+                action: input_select.select_option
+                data:
+                  entity_id: input_select.wallbox_max_current_buttons
+                variables:
+                  requested_option: !lambda return id(requested_current_option);
+                data_template:
+                  option: "{{ requested_option }}"
+                on_success:
+                  - lvgl.label.update:
+                      id: command_result
+                      text: "HA hat die Anfrage angenommen. Wallbox-Rückmeldung oben prüfen."
+                on_error:
+                  - lvgl.label.update:
+                      id: command_result
+                      text: "HA-Anfrage fehlgeschlagen. API-Berechtigung und Verbindung prüfen."
+          else:
+            - lvgl.label.update:
+                id: command_result
+                text: "Keine Anfrage gesendet: Verbindung oder gültige Rückmeldung fehlt."

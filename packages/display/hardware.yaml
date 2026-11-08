@@ -1,0 +1,43 @@
+# Same board model and delayed display initialization as the reference HMI.
+i2c:
+  - id: board_i2c
+    sda: GPIO8
+    scl: GPIO9
+    frequency: 400kHz
+    scan: true
+
+ch422g:
+  - id: io_expander
+    i2c_id: board_i2c
+
+touchscreen:
+  - platform: gt911
+    id: wallbox_touch
+    display: wallbox_display
+    i2c_id: board_i2c
+    interrupt_pin: GPIO4
+    reset_pin:
+      ch422g: io_expander
+      number: 1
+      mode:
+        output: true
+
+display:
+  - platform: mipi_rgb
+    model: ESP32-S3-TOUCH-LCD-7-800X480
+    id: wallbox_display
+    # Reserve internal/DMA memory for networking before allocating the display.
+    setup_priority: 190
+    auto_clear_enabled: false
+    update_interval: never
+
+lvgl:
+  id: wallbox_lvgl
+  setup_priority: 180
+  displays:
+    - wallbox_display
+  touchscreens:
+    - touchscreen_id: wallbox_touch
+  buffer_size: 30%
+  color_depth: 16
+  log_level: WARN

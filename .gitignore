@@ -1,0 +1,4 @@
+# Local credentials and ESPHome build/download caches.
+secrets.yaml
+.esphome/
+__pycache__/

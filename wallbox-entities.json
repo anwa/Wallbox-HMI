@@ -1,0 +1,831 @@
+{
+  "entities": [
+    {
+      "entity_id": "input_select.wallbox_max_current_buttons",
+      "state": "0A",
+      "attributes": {
+        "options": [
+          "0A",
+          "6A",
+          "10A",
+          "12A",
+          "16A"
+        ],
+        "editable": false,
+        "icon": "mdi:ev-station",
+        "friendly_name": "Wallbox maximaler Ladestrom"
+      },
+      "last_changed": "2026-11-07T06:12:59.869063+00:00",
+      "last_reported": "2026-11-07T06:12:59.869063+00:00",
+      "last_updated": "2026-11-07T06:12:59.869063+00:00",
+      "context": {
+        "id": "01M6TA73AVND0NM412XA1130E0",
+        "parent_id": "01M6TA58QHVGA1KK7ZWPZK6TWP",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "input_number.wallbox_start_energy",
+      "state": "782797.0",
+      "attributes": {
+        "min": 0.0,
+        "max": 1000000000.0,
+        "step": 0.1,
+        "mode": "box",
+        "initial": null,
+        "editable": true,
+        "unit_of_measurement": "VAh",
+        "icon": "mdi:lightning-bolt",
+        "friendly_name": "wallbox_start_energy"
+      },
+      "last_changed": "2026-11-07T06:51:07.753778+00:00",
+      "last_reported": "2026-11-07T06:51:07.753778+00:00",
+      "last_updated": "2026-11-07T06:51:07.753778+00:00",
+      "context": {
+        "id": "01M6TCCXK8TYGWS7HQSWKWJ8XB",
+        "parent_id": "01M6TCCXJW76E4AEE7YQGVGE8Z",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "input_number.wallbox_energy_charged",
+      "state": "0.0",
+      "attributes": {
+        "min": 0.0,
+        "max": 100000.0,
+        "step": 1.0,
+        "mode": "box",
+        "initial": null,
+        "editable": true,
+        "unit_of_measurement": "VAh",
+        "icon": "mdi:power-plug",
+        "friendly_name": "wallbox_energy_charged"
+      },
+      "last_changed": "2026-11-07T06:51:07.753182+00:00",
+      "last_reported": "2026-11-07T06:51:07.753182+00:00",
+      "last_updated": "2026-11-07T06:51:07.753182+00:00",
+      "context": {
+        "id": "01M6TCCXK8TYGWS7HQSWKWJ8XB",
+        "parent_id": "01M6TCCXJW76E4AEE7YQGVGE8Z",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.hof_wallbox_import_hourly",
+      "state": "0",
+      "attributes": {
+        "state_class": "total_increasing",
+        "status": "collecting",
+        "last_period": "0",
+        "last_valid_state": "4083970",
+        "last_reset": "2026-11-08T05:00:00.014728+00:00",
+        "next_reset": "2026-11-08T07:00:00+01:00",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Hof/Wallbox import hourly"
+      },
+      "last_changed": "2026-11-06T23:00:00.033210+00:00",
+      "last_reported": "2026-11-08T05:00:00.015117+00:00",
+      "last_updated": "2026-11-08T05:00:00.015117+00:00",
+      "context": {
+        "id": "01M6WRE54F4498G4RQEH5HZE5Y",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.hof_wallbox_import_daily",
+      "state": "0",
+      "attributes": {
+        "state_class": "total_increasing",
+        "status": "collecting",
+        "last_period": "0",
+        "last_valid_state": "4083970",
+        "last_reset": "2026-11-07T23:00:00.010080+00:00",
+        "next_reset": "2026-11-09T00:00:00+01:00",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Hof/Wallbox import daily"
+      },
+      "last_changed": "2026-11-06T23:00:00.016741+00:00",
+      "last_reported": "2026-11-07T23:00:00.015826+00:00",
+      "last_updated": "2026-11-07T23:00:00.015826+00:00",
+      "context": {
+        "id": "01M6W3TZCFQTBWSYPAD15PKV1H",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.hof_wallbox_import_monthly",
+      "state": "58929",
+      "attributes": {
+        "state_class": "total_increasing",
+        "status": "collecting",
+        "last_period": "124831",
+        "last_valid_state": "4083970",
+        "last_reset": "2026-10-31T23:00:00.062030+00:00",
+        "next_reset": "2026-12-01T00:00:00+01:00",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Hof/Wallbox import monthly"
+      },
+      "last_changed": "2026-11-06T22:25:24.543197+00:00",
+      "last_reported": "2026-11-06T22:25:24.543197+00:00",
+      "last_updated": "2026-11-06T22:25:24.543197+00:00",
+      "context": {
+        "id": "01M6SFEXHZXFSZAADJH6612GFM",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.hof_wallbox_import_yearly",
+      "state": "2000692",
+      "attributes": {
+        "state_class": "total_increasing",
+        "status": "collecting",
+        "last_period": "1370087",
+        "last_valid_state": "4083970",
+        "last_reset": "2025-12-31T23:00:00.052940+00:00",
+        "next_reset": "2027-01-01T00:00:00+01:00",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Hof/Wallbox import yearly"
+      },
+      "last_changed": "2026-11-06T22:25:24.543280+00:00",
+      "last_reported": "2026-11-06T22:25:24.543280+00:00",
+      "last_updated": "2026-11-06T22:25:24.543280+00:00",
+      "context": {
+        "id": "01M6SFEXHZ9MF1A9HTNDB5KM1M",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_modbus_register_layouts_version",
+      "state": "264",
+      "attributes": {
+        "friendly_name": "Wallbox Modbus Register-Layouts Version"
+      },
+      "last_changed": "2026-11-05T07:53:01.889482+00:00",
+      "last_reported": "2026-11-05T07:53:01.889482+00:00",
+      "last_updated": "2026-11-05T07:53:01.889482+00:00",
+      "context": {
+        "id": "01M6NB4TP1A339SNBKCAP23J1H",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_charging_state",
+      "state": "4",
+      "attributes": {
+        "friendly_name": "Wallbox Charging State"
+      },
+      "last_changed": "2026-11-07T06:52:51.594933+00:00",
+      "last_reported": "2026-11-07T06:52:51.594933+00:00",
+      "last_updated": "2026-11-07T06:52:51.594933+00:00",
+      "context": {
+        "id": "01M6TCG30AJXPYC3YQWB3HKA35",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_l1_current_rms",
+      "state": "0.0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Arms",
+        "device_class": "current",
+        "friendly_name": "Wallbox L1 - Current RMS"
+      },
+      "last_changed": "2026-11-06T22:25:25.672623+00:00",
+      "last_reported": "2026-11-06T22:25:25.672623+00:00",
+      "last_updated": "2026-11-06T22:25:25.672623+00:00",
+      "context": {
+        "id": "01M6SFEYN8R7641FJ6S80W28QM",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_l2_current_rms",
+      "state": "0.0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Arms",
+        "device_class": "current",
+        "friendly_name": "Wallbox L2 - Current RMS"
+      },
+      "last_changed": "2026-11-06T22:25:27.316684+00:00",
+      "last_reported": "2026-11-06T22:25:27.316684+00:00",
+      "last_updated": "2026-11-06T22:25:27.316684+00:00",
+      "context": {
+        "id": "01M6SFF08M32H9MD8Q18GJFMTJ",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_l3_current_rms",
+      "state": "0.0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Arms",
+        "device_class": "current",
+        "friendly_name": "Wallbox L3 - Current RMS"
+      },
+      "last_changed": "2026-11-06T22:25:23.905248+00:00",
+      "last_reported": "2026-11-06T22:25:23.905248+00:00",
+      "last_updated": "2026-11-06T22:25:23.905248+00:00",
+      "context": {
+        "id": "01M6SFEWY13YPPMEV3MWZSB3FC",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_pcb_temperatur",
+      "state": "16.4",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+        "device_class": "temperature",
+        "friendly_name": "Wallbox PCB Temperatur"
+      },
+      "last_changed": "2026-11-08T05:18:33.169157+00:00",
+      "last_reported": "2026-11-08T05:18:33.169157+00:00",
+      "last_updated": "2026-11-08T05:18:33.169157+00:00",
+      "context": {
+        "id": "01M6WSG46H91ZHBS2T977F84F7",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_voltage_l1_n_rms",
+      "state": "232",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Vrms",
+        "device_class": "voltage",
+        "friendly_name": "Wallbox Voltage L1 - N rms"
+      },
+      "last_changed": "2026-11-08T05:06:20.058991+00:00",
+      "last_reported": "2026-11-08T05:06:20.058991+00:00",
+      "last_updated": "2026-11-08T05:06:20.058991+00:00",
+      "context": {
+        "id": "01M6WRSR8TA2FN6DV39J0KKRQ7",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_voltage_l2_n_rms",
+      "state": "232",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Vrms",
+        "device_class": "voltage",
+        "friendly_name": "Wallbox Voltage L2 - N rms"
+      },
+      "last_changed": "2026-11-08T05:19:03.586105+00:00",
+      "last_reported": "2026-11-08T05:19:03.586105+00:00",
+      "last_updated": "2026-11-08T05:19:03.586105+00:00",
+      "context": {
+        "id": "01M6WSH1X2TGXJX20HC6EFRCNR",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_voltage_l3_n_rms",
+      "state": "228",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "Vrms",
+        "device_class": "voltage",
+        "friendly_name": "Wallbox Voltage L3 - N rms"
+      },
+      "last_changed": "2026-11-08T05:14:12.320067+00:00",
+      "last_reported": "2026-11-08T05:14:12.320067+00:00",
+      "last_updated": "2026-11-08T05:14:12.320067+00:00",
+      "context": {
+        "id": "01M6WS85F00T9BQYE5WQDXDHA5",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_external_lock_state",
+      "state": "1",
+      "attributes": {
+        "friendly_name": "Wallbox External lock state"
+      },
+      "last_changed": "2026-11-05T07:53:01.890784+00:00",
+      "last_reported": "2026-11-05T07:53:01.890784+00:00",
+      "last_updated": "2026-11-05T07:53:01.890784+00:00",
+      "context": {
+        "id": "01M6NB4TP2VK5P56WNJNFXF2YF",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_power_l1_l2_l3",
+      "state": "0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "VA",
+        "device_class": "apparent_power",
+        "friendly_name": "Wallbox Power (L1+L2+L3)"
+      },
+      "last_changed": "2026-11-06T22:25:30.172695+00:00",
+      "last_reported": "2026-11-06T22:25:30.172695+00:00",
+      "last_updated": "2026-11-06T22:25:30.172695+00:00",
+      "context": {
+        "id": "01M6SFF31WVMCQMMJ8K19HW9QR",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energy_since_poweron",
+      "state": "782797",
+      "attributes": {
+        "state_class": "total_increasing",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Wallbox Energy since PowerOn"
+      },
+      "last_changed": "2026-11-06T22:25:21.526693+00:00",
+      "last_reported": "2026-11-06T22:25:21.526693+00:00",
+      "last_updated": "2026-11-06T22:25:21.526693+00:00",
+      "context": {
+        "id": "01M6SFETKP9WH3FNXPPGM10K81",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energy_since_installation",
+      "state": "4083970",
+      "attributes": {
+        "state_class": "total_increasing",
+        "unit_of_measurement": "VAh",
+        "device_class": "energy",
+        "friendly_name": "Wallbox Energy since Installation"
+      },
+      "last_changed": "2026-11-06T22:25:24.542075+00:00",
+      "last_reported": "2026-11-06T22:25:24.542075+00:00",
+      "last_updated": "2026-11-06T22:25:24.542075+00:00",
+      "context": {
+        "id": "01M6SFEXHYDK7Y8XYXKWTM9DKM",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_hardware_configuration_maximal_current",
+      "state": "16",
+      "attributes": {
+        "unit_of_measurement": "A",
+        "friendly_name": "Wallbox Hardware configuration maximal current"
+      },
+      "last_changed": "2026-11-05T07:53:01.891257+00:00",
+      "last_reported": "2026-11-05T07:53:01.891257+00:00",
+      "last_updated": "2026-11-05T07:53:01.891257+00:00",
+      "context": {
+        "id": "01M6NB4TP3HF03WK6K4J6H46AD",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_hardware_configuration_minimal_current",
+      "state": "6",
+      "attributes": {
+        "unit_of_measurement": "A",
+        "friendly_name": "Wallbox Hardware configuration minimal current"
+      },
+      "last_changed": "2026-11-05T07:53:01.891347+00:00",
+      "last_reported": "2026-11-05T07:53:01.891347+00:00",
+      "last_updated": "2026-11-05T07:53:01.891347+00:00",
+      "context": {
+        "id": "01M6NB4TP35A2WTCWZ9NJQR9XH",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_modbus_master_watchdog_timeout",
+      "state": "60000",
+      "attributes": {
+        "unit_of_measurement": "ms",
+        "friendly_name": "Wallbox ModBus-Master WatchDog Timeout"
+      },
+      "last_changed": "2026-11-05T07:53:01.891433+00:00",
+      "last_reported": "2026-11-05T07:53:01.891433+00:00",
+      "last_updated": "2026-11-05T07:53:01.891433+00:00",
+      "context": {
+        "id": "01M6NB4TP3Z2Q1C401H237XBGE",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_standby_function_control",
+      "state": "4",
+      "attributes": {
+        "friendly_name": "Wallbox Standby Function Control"
+      },
+      "last_changed": "2026-11-05T07:53:01.891513+00:00",
+      "last_reported": "2026-11-05T07:53:01.891513+00:00",
+      "last_updated": "2026-11-05T07:53:01.891513+00:00",
+      "context": {
+        "id": "01M6NB4TP3BATKPSVW159D6XJT",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_remote_lock",
+      "state": "1",
+      "attributes": {
+        "friendly_name": "Wallbox Remote Lock"
+      },
+      "last_changed": "2026-11-05T07:53:01.891595+00:00",
+      "last_reported": "2026-11-05T07:53:01.891595+00:00",
+      "last_updated": "2026-11-05T07:53:01.891595+00:00",
+      "context": {
+        "id": "01M6NB4TP3XSWNKK8Q9YGH8137",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_maximal_current_command",
+      "state": "0.0",
+      "attributes": {
+        "unit_of_measurement": "A",
+        "friendly_name": "Wallbox Maximal Current Command"
+      },
+      "last_changed": "2026-11-07T06:13:10.510411+00:00",
+      "last_reported": "2026-11-07T06:13:10.510411+00:00",
+      "last_updated": "2026-11-07T06:13:10.510411+00:00",
+      "context": {
+        "id": "01M6TA7DQE47DVPNQ0K1REF7CN",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_failsafe_current",
+      "state": "0.0",
+      "attributes": {
+        "unit_of_measurement": "A",
+        "friendly_name": "Wallbox FailSafe Current"
+      },
+      "last_changed": "2026-11-05T07:53:01.891758+00:00",
+      "last_reported": "2026-11-05T07:53:01.891758+00:00",
+      "last_updated": "2026-11-05T07:53:01.891758+00:00",
+      "context": {
+        "id": "01M6NB4TP3KZTG47W3A939W8DB",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energie_monat",
+      "state": "58.93",
+      "attributes": {
+        "unit_of_measurement": "kWh",
+        "icon": "mdi:ev-station",
+        "friendly_name": "Wallbox Energie Monat"
+      },
+      "last_changed": "2026-11-05T15:10:26.938233+00:00",
+      "last_reported": "2026-11-05T15:10:26.938233+00:00",
+      "last_updated": "2026-11-05T15:10:26.938233+00:00",
+      "context": {
+        "id": "01M6P45RKNFG144S51EJM5A81D",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energie_jahr",
+      "state": "2000.69",
+      "attributes": {
+        "unit_of_measurement": "kWh",
+        "icon": "mdi:ev-station",
+        "friendly_name": "Wallbox Energie Jahr"
+      },
+      "last_changed": "2026-11-05T15:10:05.345935+00:00",
+      "last_reported": "2026-11-05T15:10:05.345935+00:00",
+      "last_updated": "2026-11-05T15:10:05.345935+00:00",
+      "context": {
+        "id": "01M6P453GYGQHDH9M4B4W86FV3",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.kosten_wallbox_monat",
+      "state": "14.46",
+      "attributes": {
+        "unit_of_measurement": "€",
+        "icon": "mdi:car-electric",
+        "friendly_name": "Kosten Wallbox Monat"
+      },
+      "last_changed": "2026-11-05T15:07:29.486356+00:00",
+      "last_reported": "2026-11-05T15:07:29.486356+00:00",
+      "last_updated": "2026-11-05T15:07:29.486356+00:00",
+      "context": {
+        "id": "01M6P40BA8ERGNAQ95HDMF7SRA",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.kosten_wallbox_jahr",
+      "state": "490.97",
+      "attributes": {
+        "unit_of_measurement": "€",
+        "icon": "mdi:car-electric",
+        "friendly_name": "Kosten Wallbox Jahr"
+      },
+      "last_changed": "2026-11-05T15:08:32.054873+00:00",
+      "last_reported": "2026-11-05T15:08:32.054873+00:00",
+      "last_updated": "2026-11-05T15:08:32.054873+00:00",
+      "context": {
+        "id": "01M6P428DKZCJ7A6Y7ZAWP8F9Y",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energy_kwh",
+      "state": "4083.97",
+      "attributes": {
+        "state_class": "total_increasing",
+        "unit_of_measurement": "kWh",
+        "device_class": "energy",
+        "friendly_name": "Wallbox Energy kWh"
+      },
+      "last_changed": "2026-11-06T22:25:24.542736+00:00",
+      "last_reported": "2026-11-06T22:25:24.542736+00:00",
+      "last_updated": "2026-11-06T22:25:24.542736+00:00",
+      "context": {
+        "id": "01M6SFEXHYDK7Y8XYXKWTM9DKM",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_power_kw",
+      "state": "0.0",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "kW",
+        "device_class": "power",
+        "friendly_name": "Wallbox Power kW"
+      },
+      "last_changed": "2026-11-06T22:25:30.173314+00:00",
+      "last_reported": "2026-11-06T22:25:30.173314+00:00",
+      "last_updated": "2026-11-06T22:25:30.173314+00:00",
+      "context": {
+        "id": "01M6SFF31WVMCQMMJ8K19HW9QR",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_charging_state_short",
+      "state": "B1",
+      "attributes": {
+        "friendly_name": "Wallbox Charging State Short"
+      },
+      "last_changed": "2026-11-07T06:52:51.602991+00:00",
+      "last_reported": "2026-11-07T06:52:51.602991+00:00",
+      "last_updated": "2026-11-07T06:52:51.602991+00:00",
+      "context": {
+        "id": "01M6TCG30AJXPYC3YQWB3HKA35",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_charging_state_text",
+      "state": "Vehicle plugged without charging request -- Wallbox doesn't allow charging",
+      "attributes": {
+        "friendly_name": "Wallbox Charging State Text"
+      },
+      "last_changed": "2026-11-07T06:52:51.603138+00:00",
+      "last_reported": "2026-11-07T06:52:51.603138+00:00",
+      "last_updated": "2026-11-07T06:52:51.603138+00:00",
+      "context": {
+        "id": "01M6TCG30AJXPYC3YQWB3HKA35",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_version",
+      "state": "\"V1.0.8\"",
+      "attributes": {
+        "friendly_name": "Wallbox Version"
+      },
+      "last_changed": "2026-11-05T07:53:04.629518+00:00",
+      "last_reported": "2026-11-05T07:53:04.629518+00:00",
+      "last_updated": "2026-11-05T07:53:04.629518+00:00",
+      "context": {
+        "id": "01M6NB4XBNZBM93W7SWPR27Y52",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_standby_funktion",
+      "state": "\"disable StandBy Funktion\"",
+      "attributes": {
+        "friendly_name": "Wallbox StandBy Funktion"
+      },
+      "last_changed": "2026-11-05T07:53:04.629603+00:00",
+      "last_reported": "2026-11-05T07:53:04.629603+00:00",
+      "last_updated": "2026-11-05T07:53:04.629603+00:00",
+      "context": {
+        "id": "01M6NB4XBN0ZZHZTZFQ769DZ1N",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "sensor.wallbox_energy_charged",
+      "state": "0.0",
+      "attributes": {
+        "state_class": "total",
+        "unit_of_measurement": "kWh",
+        "device_class": "energy",
+        "friendly_name": "Wallbox Energy Charged"
+      },
+      "last_changed": "2026-11-07T06:51:07.756199+00:00",
+      "last_reported": "2026-11-07T06:51:07.756199+00:00",
+      "last_updated": "2026-11-07T06:51:07.756199+00:00",
+      "context": {
+        "id": "01M6TCCXK8TYGWS7HQSWKWJ8XB",
+        "parent_id": "01M6TCCXJW76E4AEE7YQGVGE8Z",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "binary_sensor.wallbox_aktiv",
+      "state": "off",
+      "attributes": {
+        "reason": "idle",
+        "device_class": "running",
+        "friendly_name": "Wallbox aktiv"
+      },
+      "last_changed": "2026-11-06T22:25:31.006950+00:00",
+      "last_reported": "2026-11-06T22:25:31.006950+00:00",
+      "last_updated": "2026-11-06T22:25:31.006950+00:00",
+      "context": {
+        "id": "01M6SFF3VYVME70K1W2PA3EP30",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.wallbox_startwert_speichern",
+      "state": "on",
+      "attributes": {
+        "id": "1739002274924",
+        "last_triggered": "2026-11-06T22:25:15.355411+00:00",
+        "mode": "single",
+        "current": 0,
+        "friendly_name": "Wallbox: Startwert speichern"
+      },
+      "last_changed": "2026-11-05T07:53:04.829535+00:00",
+      "last_reported": "2026-11-06T22:25:15.356512+00:00",
+      "last_updated": "2026-11-06T22:25:15.356512+00:00",
+      "context": {
+        "id": "01M6SFEMJVSRZXY9DQW5K4BWPZ",
+        "parent_id": "01M6SFEMJGE6CYHN4KAEV92592",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.wallbox_geladene_energie_berechnen_2",
+      "state": "on",
+      "attributes": {
+        "id": "wallbox_energy_update",
+        "last_triggered": "2026-11-06T22:25:21.527115+00:00",
+        "mode": "single",
+        "current": 0,
+        "friendly_name": "Wallbox: Geladene Energie berechnen"
+      },
+      "last_changed": "2026-11-05T07:53:04.829616+00:00",
+      "last_reported": "2026-11-06T22:25:21.527617+00:00",
+      "last_updated": "2026-11-06T22:25:21.527617+00:00",
+      "context": {
+        "id": "01M6SFETKQHY93J9ACXH00F95R",
+        "parent_id": "01M6SFETKP9WH3FNXPPGM10K81",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.wallbox_lademenge_zurucksetzen_2",
+      "state": "on",
+      "attributes": {
+        "id": "wallbox_energy_reset",
+        "last_triggered": "2026-11-07T06:51:07.752396+00:00",
+        "mode": "single",
+        "current": 0,
+        "friendly_name": "Wallbox: Lademenge zurücksetzen"
+      },
+      "last_changed": "2026-11-05T07:53:04.829686+00:00",
+      "last_reported": "2026-11-07T06:51:07.753897+00:00",
+      "last_updated": "2026-11-07T06:51:07.753897+00:00",
+      "context": {
+        "id": "01M6TCCXK8TYGWS7HQSWKWJ8XB",
+        "parent_id": "01M6TCCXJW76E4AEE7YQGVGE8Z",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.set_wallbox_max_current_from_buttons",
+      "state": "on",
+      "attributes": {
+        "id": "1743070009948",
+        "last_triggered": "2026-11-07T06:12:59.874442+00:00",
+        "mode": "restart",
+        "current": 0,
+        "friendly_name": "Wallbox: Maximalen Ladestrom schreiben"
+      },
+      "last_changed": "2026-11-05T07:53:04.829824+00:00",
+      "last_reported": "2026-11-07T06:13:00.320057+00:00",
+      "last_updated": "2026-11-07T06:13:00.320057+00:00",
+      "context": {
+        "id": "01M6TA73B2F7CP8JJ1R026P1XG",
+        "parent_id": "01M6TA73AVND0NM412XA1130E0",
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.sync_wallbox_max_current",
+      "state": "on",
+      "attributes": {
+        "id": "1743071714463",
+        "last_triggered": "2026-08-05T16:01:11.049592+00:00",
+        "mode": "restart",
+        "current": 0,
+        "friendly_name": "Wallbox: Maximalen Ladestrom synchronisieren"
+      },
+      "last_changed": "2026-11-05T07:53:04.829896+00:00",
+      "last_reported": "2026-11-05T07:53:04.829896+00:00",
+      "last_updated": "2026-11-05T07:53:04.829896+00:00",
+      "context": {
+        "id": "01M6NB4XHX4VPZ24Q8JPXS0G4Y",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.wallbox_geladene_energie_berechnen",
+      "state": "unavailable",
+      "attributes": {
+        "restored": true,
+        "id": "1739002411851",
+        "friendly_name": "Wallbox: Geladene Energie berechnen",
+        "supported_features": 0
+      },
+      "last_changed": "2026-11-05T07:53:16.875838+00:00",
+      "last_reported": "2026-11-05T07:53:16.875838+00:00",
+      "last_updated": "2026-11-05T07:53:16.875838+00:00",
+      "context": {
+        "id": "01M6NB59ABTBCQ7ZMP7F9JMEZF",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    {
+      "entity_id": "automation.wallbox_lademenge_zurucksetzen",
+      "state": "unavailable",
+      "attributes": {
+        "restored": true,
+        "id": "1739003007974",
+        "friendly_name": "Wallbox: Lademenge zurücksetzen",
+        "supported_features": 0
+      },
+      "last_changed": "2026-11-05T07:53:16.875843+00:00",
+      "last_reported": "2026-11-05T07:53:16.875843+00:00",
+      "last_updated": "2026-11-05T07:53:16.875843+00:00",
+      "context": {
+        "id": "01M6NB59ABEEKH11VVRNBVJ79N",
+        "parent_id": null,
+        "user_id": null
+      }
+    }
+  ]
+}

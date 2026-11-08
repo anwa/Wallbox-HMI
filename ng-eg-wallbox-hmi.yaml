@@ -1,10 +1,20 @@
-# Board: Generic ESP32-S3 Board (Generic)
-# Definition: definitions/boards/generic-esp32s3/manifest.yaml
+# Target: Waveshare ESP32-S3-Touch-LCD-7 (800x480, GT911, CH422G)
+
+packages:
+  display_hardware: !include packages/display/hardware.yaml
+  homeassistant: !include packages/homeassistant.yaml
+  display_ui: !include packages/display/ui.yaml
+  display_runtime: !include packages/display/runtime.yaml
 
 esphome:
   name: ng-eg-wallbox-hmi
   friendly_name: NG|EG|Wallbox-HMI
   min_version: 2026.10.2
+  includes:
+    - trend_buffer.h
+    - wallbox_ui.h
+  build_flags:
+    - -D LV_USE_CHART=1
 
 esp32:
   variant: esp32s3
@@ -111,9 +121,18 @@ web_server:
 # ==============================================================================
 
 api:
+  id: wallbox_api
   reboot_timeout: 0s
   encryption:
     key: !secret api_encryption_key
+  on_client_disconnected:
+    - if:
+        condition:
+          not:
+            api.connected:
+              state_subscription_only: true
+        then:
+          - script.execute: invalidate_ha_state
 
 # ==============================================================================
 # OVER-THE-AIR FIRMWARE UPDATE
@@ -156,14 +175,14 @@ wifi:
 
 captive_portal:
 
-  # ==============================================================================
+# ==============================================================================
 # TIME SYNCHRONIZATION
 # ==============================================================================
 #
 # SNTP provides Europe/Berlin local time for shared HMI presentation and other
 # time-dependent target functions.
 #
-# Header rendering is handled separately by display/header.yaml.
+# Header rendering is handled by packages/display/runtime.yaml.
 # ==============================================================================
 
 time:
@@ -195,10 +214,7 @@ time:
 # ESPHOME DEBUG METRICS
 # ==============================================================================
 #
-# Enables the shared ESPHome debug component used by both V6 targets.
-#
-# Diagnostic entities consuming these metrics are declared in
-# shared/local-diagnostics.yaml.
+# Enables local runtime diagnostics independently of Home Assistant.
 # ==============================================================================
 
 debug:

@@ -1,0 +1,13 @@
+id: ${id}
+x: ${x}
+y: 70
+width: 185
+height: 44
+styles: button_style
+widgets:
+  - label:
+      align: CENTER
+      text: ${title}
+on_click:
+  - lambda: id(trend_selection) = ${selection};
+  - script.execute: refresh_trends

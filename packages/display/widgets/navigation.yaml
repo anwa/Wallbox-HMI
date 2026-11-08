@@ -1,0 +1,15 @@
+id: ${id}
+x: ${x}
+y: 416
+width: 185
+height: 54
+styles: button_style
+widgets:
+  - label:
+      align: CENTER
+      text: ${title}
+on_click:
+  - lvgl.page.show: ${page_id}
+  - script.execute:
+      id: select_page
+      page: ${index}

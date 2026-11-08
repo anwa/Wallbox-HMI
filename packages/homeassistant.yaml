@@ -1,0 +1,57 @@
+# Import live states, never the sample values in wallbox-entities.json.
+# Do not use timeout filters: HA can leave unchanged values unpublished for hours.
+sensor:
+  - platform: homeassistant
+    id: wb_power
+    entity_id: sensor.wallbox_power_kw
+    internal: true
+  - platform: homeassistant
+    id: wb_energy
+    entity_id: sensor.wallbox_energy_charged
+    internal: true
+  - platform: homeassistant
+    id: wb_temperature
+    entity_id: sensor.wallbox_pcb_temperatur
+    internal: true
+  - platform: homeassistant
+    id: wb_current_limit
+    entity_id: sensor.wallbox_maximal_current_command
+    internal: true
+  - platform: homeassistant
+    id: wb_voltage_l1
+    entity_id: sensor.wallbox_voltage_l1_n_rms
+    internal: true
+  - platform: homeassistant
+    id: wb_voltage_l2
+    entity_id: sensor.wallbox_voltage_l2_n_rms
+    internal: true
+  - platform: homeassistant
+    id: wb_voltage_l3
+    entity_id: sensor.wallbox_voltage_l3_n_rms
+    internal: true
+  - platform: homeassistant
+    id: wb_current_l1
+    entity_id: sensor.wallbox_l1_current_rms
+    internal: true
+  - platform: homeassistant
+    id: wb_current_l2
+    entity_id: sensor.wallbox_l2_current_rms
+    internal: true
+  - platform: homeassistant
+    id: wb_current_l3
+    entity_id: sensor.wallbox_l3_current_rms
+    internal: true
+
+text_sensor:
+  - platform: homeassistant
+    id: wb_state_code
+    entity_id: sensor.wallbox_charging_state_short
+    internal: true
+  - platform: homeassistant
+    id: wb_state_text
+    entity_id: sensor.wallbox_charging_state_text
+    internal: true
+  - platform: homeassistant
+    id: wb_current_option
+    entity_id: input_select.wallbox_max_current_buttons
+    internal: true

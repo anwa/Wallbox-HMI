@@ -1,0 +1,15 @@
+id: ${id}
+x: ${x}
+y: 116
+width: 136
+height: 64
+styles: button_style
+widgets:
+  - label:
+      align: CENTER
+      text: ${title}
+      text_font: font_heading
+on_click:
+  - script.execute:
+      id: prepare_current
+      option: "${option}"
