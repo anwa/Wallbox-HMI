@@ -1,6 +1,7 @@
 # Target: Waveshare ESP32-S3-Touch-LCD-7 (800x480, GT911, CH422G)
 
 packages:
+  project_version: !include packages/ng-eg-gang-wallbox-hmi/version.yaml
   display_hardware: !include packages/ng-eg-gang-wallbox-hmi/display/hardware.yaml
   homeassistant: !include packages/ng-eg-gang-wallbox-hmi/homeassistant.yaml
   battery_bank: !include packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml
@@ -11,6 +12,9 @@ esphome:
   name: ng-eg-gang-wallbox-hmi
   friendly_name: NG|EG|Gang|Wallbox-HMI
   min_version: 2026.10.2
+  project:
+    name: wallbox.hmi
+    version: "${firmware_version}"
   includes:
     - packages/ng-eg-gang-wallbox-hmi/trend_buffer.h
     - packages/ng-eg-gang-wallbox-hmi/wallbox_ui.h
