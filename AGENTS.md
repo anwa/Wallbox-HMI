@@ -37,6 +37,7 @@
 
 # Verification and secrets
 
+- `scripts/deploy-ha.ps1` (PowerShell 7+) transfers only the main YAML and its existing device package namespace, with staging, SHA-256 checks and default backups; do not rewrite paths or add a second node prefix. It never validates, builds or flashes. Do not execute it, including `-DryRun`, without an explicit request to run it; adapting the script is not permission to deploy.
 - For user-run verification with the ESPHome CLI: `esphome config ng-eg-gang-wallbox-hmi.yaml` validates, then `esphome compile ng-eg-gang-wallbox-hmi.yaml` builds firmware. Neither command uploads firmware; agents must not run them without an explicit request.
 - Both require a local, ignored `secrets.yaml` beside the firmware YAML with `web_server_username`, `web_server_password`, `api_encryption_key`, `wifi_ssid`, `wifi_password`, and `fallback_ap_password`. For isolated checks, copy only source files to a temporary directory and supply dummy secrets there; never flash that build.
 - `python -m unittest discover -s tests -v` checks entity IDs, units and current options against the HA export (PyYAML comes with ESPHome). `tests/trend_buffer_test.cpp` tests history order, missing samples, ring wrap and clock rollover; see `README.md` for the host-compiler command. Schema validation alone does not compile C++ lambdas.

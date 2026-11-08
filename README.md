@@ -70,6 +70,29 @@ ESPHome-Installation konfliktfrei nutzen können. Schriftarten werden
 beim Build heruntergeladen; im laufenden Betrieb benötigt die GUI kein Internet.
 Die Weboberfläche und der lokale Bildschirm verwenden unterschiedliche Oberflächen.
 
+### Quellen nach Home Assistant übertragen
+
+`scripts/deploy-ha.ps1` ist die auf dieses Einzelgerät angepasste Variante des Deploy-Skripts aus dem Referenzprojekt. Es überträgt ausschließlich `ng-eg-gang-wallbox-hmi.yaml` und die Quelldateien in `packages/ng-eg-gang-wallbox-hmi/`, einschließlich der C++-Header. Die bereits gerätespezifischen Pfade bleiben unverändert; ein zweites Gerätenamen-Präfix wird nicht eingefügt. Andere Geräte, `secrets.yaml`, `.env`-Dateien, Tests, Entity-Exporte und Build-Verzeichnisse werden nicht übertragen.
+
+Voraussetzung ist **PowerShell 7 oder neuer** (`pwsh`). Für die echte Übertragung werden außerdem `ssh` und `scp`, ein vorhandener SSH-Schlüssel mit Zugang zum HA-Host sowie dort eine POSIX-Shell und `sha256sum` benötigt. Wie im Referenzprojekt sind `10.10.80.9`, Benutzer `root`, Port `22`, Ziel `/config/esphome` und Schlüssel `$HOME/.ssh/ha_esphome_deploy` voreingestellt. Diese Werte lassen sich per Parameter überschreiben. Das Skript richtet keinen SSH-Zugang ein.
+
+```powershell
+# Nur die Dateizuordnung anzeigen; keine Netzwerkverbindung oder Übertragung.
+pwsh -File .\scripts\deploy-ha.ps1 -DryRun
+
+# Quellen mit den voreingestellten SSH-Daten übertragen.
+pwsh -File .\scripts\deploy-ha.ps1
+
+# Beispiel mit abweichendem Host, Benutzer und vorhandenem Schlüssel.
+pwsh -File .\scripts\deploy-ha.ps1 -HaHost homeassistant.local -HaUser root -Port 22 -KeyPath "$HOME/.ssh/ha_esphome_deploy" -RemoteDir /config/esphome
+```
+
+Das Skript erstellt einen temporären Quellsnapshot, lädt ihn in ein isoliertes Staging-Verzeichnis und vergleicht SHA-256-Prüfsummen vor und nach dem Einspielen. Bestehende verwaltete Dateien werden standardmäßig unter `/config/esphome/.deploy-backups/ng-eg-gang-wallbox-hmi/<Lauf-ID>/` gesichert. `-NoBackup` schaltet diese Sicherung ausdrücklich ab. SSH-Aufrufe sind auf 30 Sekunden und SCP-Transfers auf 120 Sekunden je Versuch begrenzt; vorübergehende Netzwerkfehler werden bis zu dreimal versucht. Der SSH-MAC ist wie im Referenzprojekt voreingestellt und über `-MacAlgorithm` anpassbar; eine leere Zeichenfolge erlaubt die OpenSSH-Standardauswahl.
+
+Vorhandene, inzwischen unbenutzte Paketdateien und ältere Backups werden nicht gelöscht. Die Installation ist nicht transaktional und hat keinen automatischen Rollback: Bei einem Abbruch nach Installationsbeginn Zielstand prüfen und bei Bedarf die gesicherten Dateien manuell zurückkopieren. Nicht parallel für dasselbe Gerät deployen. Das Skript entfernt nur sein eigenes temporäres Bundle und sein eigenes Staging-Verzeichnis.
+
+**Der Deploy führt weder ESPHome-Validierung noch Kompilierung oder Flashen aus.** Die vorhandene `secrets.yaml` auf dem HA-Host bleibt unangetastet und muss separat eingerichtet sein. Nach der Übertragung entscheidest du selbst über die Prüfung und Installation im ESPHome-Add-on beziehungsweise über deine Desktop-Software.
+
 Das Gerät muss in der ESPHome-Integration von Home Assistant registriert sein.
 Für die Ladestrom-Buttons dort **„Dem Gerät erlauben, Home-Assistant-Aktionen
 auszuführen“** aktivieren. Die vorhandene Automation
