@@ -2,6 +2,7 @@
 
 - Antworte mir immer auf Deutsch. Code, Code-Kommentare und Commits bleiben englisch.
 - Deutsche Texte in der App immer mit echten Umlauten: ä, ö, ü, ß. Nie ae, oe, ue oder ss als Ersatz.
+- Vor jeder neuen Aufgabe einen eigenen, passend benannten Branch mit englischem Namen anlegen. Niemals auf `main` arbeiten oder committen, auch nicht bei kleinen Änderungen. Bei Fortsetzung derselben Aufgabe den bestehenden Aufgabenbranch verwenden. Keine eigenständigen Merges nach `main`.
 - Lokale Commits nur auf ausdrücklichen Auftrag, im Format `feat: ...`, `fix: ...` oder `docs: ...`. Niemals pushen. GitHub und GitHub-Integrationen nur lesend verwenden; keine Remote-Änderungen vornehmen.
 - Tests, Konfigurationsvalidierung und Kompilierung übernimmt bis auf Weiteres der Nutzer. Nicht eigenständig ausführen oder dafür Toolchains installieren; nur auf ausdrückliche Aufforderung. Die lokale ESP-Desktop-Software wird später besprochen.
 
