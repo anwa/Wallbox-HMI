@@ -4,9 +4,13 @@
 
 ## Lokaler Merge-/Release-Command
 
+`/commit` erhöht bei jedem Commit mit Codeänderungen die Patch-Version genau einmal und nimmt die Versionsdatei in denselben Commit auf. Grundlage ist die bisherige Version auf dem jeweiligen Aufgabenbranch, nicht `main`. Reine Doku-/Kommentaränderungen bleiben ohne Versionsschritt. Changelog-Einträge bleiben zunächst unter `Unreleased`; `/commit` erzeugt keine Tags und führt keine Tests aus.
+
 `/merge` führt den aktuellen, bereits committeten Aufgabenbranch per Fast-forward nach `main`, erhöht standardmäßig die Minor-Version, erstellt einen annotierten lokalen Tag `vX.Y.Z` und löscht danach genau diesen gemergten Aufgabenbranch. Alternativen: `/merge patch`, `/merge major`, `/merge 1.2.3` oder `/merge none` ohne Versionsänderung und Tag. Bei uncommitteten Änderungen oder nicht möglichem Fast-forward stoppt der Command. Er pusht nichts und führt keine Tests, Builds oder Deployments aus.
 
 Die zentrale Projektversion steht in `packages/ng-eg-gang-wallbox-hmi/version.yaml` als `firmware_version` und wird über die Haupt-YAML in den ESPHome-Projektmetadaten von `wallbox.hmi` verwendet. `esphome.min_version` bleibt davon unabhängig. Die Versionsvorbereitung wird auf dem Aufgabenbranch committed, nicht auf `main`; ein Tag ist keine Bestätigung eines Hardwaretests.
+
+Bereits durch `/commit` erzeugte Patch-Zwischenversionen werden beim Merge berücksichtigt: Ein Minor-Release wird weiterhin beispielsweise aus `0.2.x` zu `0.3.0`; `/merge patch` übernimmt eine bereits höhere Patch-Version derselben MAJOR.MINOR-Basis, statt sie zurückzusetzen oder nochmals zu erhöhen. Eine ausdrücklich angegebene Zielversion darf nicht unter der bereits committeten Branch-Version liegen.
 
 ## Zielhardware
 

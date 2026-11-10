@@ -4,6 +4,10 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+### Changed
+
+- Increment the project patch version once per code-changing `/commit`, include it in the same commit and preserve intermediate patch versions during release preparation; documentation-only commits do not bump the version or create tags.
+
 ### Added
 
 - Add a read-only System page adapted from the reference project, with local network, uptime, CPU temperature, memory, loop-time and CPU-frequency diagnostics plus the HMI reset reason.
@@ -12,7 +16,7 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ### Fixed
 
-- Set System-page headings, captions and ordinary values explicitly to white so transparent row containers cannot introduce unreadable theme text colors; retain meaningful status colors.
+- Set System-page text colors explicitly to match the reference: light-gray headings and captions, white ordinary values and unchanged meaningful status colors, without relying on theme inheritance through transparent containers.
 
 ## [0.2.0] - 2026-11-10
 

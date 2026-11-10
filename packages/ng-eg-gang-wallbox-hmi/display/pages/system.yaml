@@ -13,7 +13,7 @@ widgets:
             x: 12
             y: 10
             text: "NETZWERK"
-            text_color: 0xFFFFFF
+            text_color: 0x8B96A0
         - obj: !include
             file: ../widgets/system_row.yaml
             vars: {id: system_ip, y: 40, caption: IP-Adresse, initial: "--"}
@@ -31,7 +31,7 @@ widgets:
             x: 12
             y: 10
             text: "LOKALES HMI"
-            text_color: 0xFFFFFF
+            text_color: 0x8B96A0
         - obj: !include
             file: ../widgets/system_row.yaml
             vars: {id: system_uptime, y: 40, caption: Laufzeit, initial: "--"}
@@ -46,7 +46,7 @@ widgets:
             y: 136
             text: "SOC ist nur eine Spannungsschätzung."
             text_font: font_small
-            text_color: 0xFFFFFF
+            text_color: 0x8B96A0
   - obj:
       x: 12
       y: 190
@@ -58,7 +58,7 @@ widgets:
             x: 12
             y: 10
             text: "SPEICHER / LAUFZEIT"
-            text_color: 0xFFFFFF
+            text_color: 0x8B96A0
         - obj: !include
             file: ../widgets/system_row.yaml
             vars: {id: system_heap, y: 40, caption: Heap frei, initial: "-- KiB"}
@@ -85,7 +85,7 @@ widgets:
             x: 12
             y: 10
             text: "STATUS / NEUSTART"
-            text_color: 0xFFFFFF
+            text_color: 0x8B96A0
         - obj: !include
             file: ../widgets/system_row.yaml
             vars: {id: system_ha, y: 40, caption: Home Assistant, initial: Offline}
