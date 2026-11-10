@@ -37,7 +37,7 @@ Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und G
 sind für das Waveshare-Board eingerichtet. Die Gestaltung orientiert sich am
 Referenzprojekt `D:\Workspace\esphome-r4875g1-3phase-charger`.
 
-Eine feste Titelzeile zeigt Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben vier
+Eine feste Titelzeile zeigt die Firmware-Version neben dem Titel, Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben vier
 Navigationsbuttons auf allen Seiten sichtbar:
 
 - **Übersicht:** Ladeleistung, Ladezustand mit HA-Statustext, geladene Energie,

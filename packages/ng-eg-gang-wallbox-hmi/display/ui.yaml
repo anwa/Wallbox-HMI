@@ -90,6 +90,12 @@ lvgl:
                 text_font: font_heading
                 text_color: 0xE7EEF4
             - label:
+                x: 128
+                align: LEFT_MID
+                text: "v${firmware_version}"
+                text_font: font_body
+                text_color: 0x9AAAB8
+            - label:
                 id: header_clock
                 align: CENTER
                 text: "--.--.----  --:--"
