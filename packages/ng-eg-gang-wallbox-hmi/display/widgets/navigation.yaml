@@ -1,7 +1,8 @@
+# Required vars: id, x, width, title, page_id, index.
 id: ${id}
 x: ${x}
 y: 416
-width: 185
+width: ${width}
 height: 54
 styles: button_style
 widgets:

@@ -1,0 +1,94 @@
+# ==============================================================================
+# LOCAL HMI DIAGNOSTICS
+# ==============================================================================
+#
+# Adapted from the reference project's shared/local-diagnostics.yaml.
+# Uses the debug component already configured by the root YAML. These sensors
+# describe this HMI, not the wallbox, and do not participate in command gating.
+# ==============================================================================
+
+sensor:
+  - platform: debug
+    free:
+      id: debug_heap_free
+      name: "Heap Free"
+      entity_category: diagnostic
+    block:
+      id: debug_heap_max_block
+      name: "Heap Max Block"
+      entity_category: diagnostic
+    psram:
+      id: debug_free_psram
+      name: "Free PSRAM"
+      entity_category: diagnostic
+    loop_time:
+      id: debug_loop_time
+      name: "Loop Time"
+      entity_category: diagnostic
+    cpu_frequency:
+      id: debug_cpu_frequency
+      name: "CPU Frequency"
+      entity_category: diagnostic
+  - platform: internal_temperature
+    id: cpu_temp
+    name: "HMI CPU Temperature"
+    entity_category: diagnostic
+    accuracy_decimals: 1
+    update_interval: 10s
+  - platform: uptime
+    id: debug_uptime
+    name: "HMI Uptime"
+    type: seconds
+    entity_category: diagnostic
+    update_interval: 10s
+  - platform: wifi_signal
+    id: wifi_sig
+    name: "HMI WiFi RSSI"
+    entity_category: diagnostic
+    update_interval: 10s
+
+  # Voltage-based estimate from the reference project, not a fuel gauge.
+  # Requires the same physical ADC wiring as local_backup_battery_voltage.
+  - platform: template
+    id: local_backup_battery_soc
+    name: "HMI Battery State of Charge"
+    unit_of_measurement: "%"
+    device_class: battery
+    state_class: measurement
+    entity_category: diagnostic
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      const float voltage = id(local_backup_battery_voltage).state;
+      if (!std::isfinite(voltage)) return NAN;
+      struct Point { float voltage; float soc; };
+      static const Point curve[] = {
+        {3.30f, 0.0f}, {3.50f, 5.0f}, {3.60f, 10.0f},
+        {3.70f, 25.0f}, {3.80f, 45.0f}, {3.90f, 65.0f},
+        {4.00f, 80.0f}, {4.10f, 90.0f}, {4.20f, 100.0f}
+      };
+      if (voltage <= curve[0].voltage) return 0.0f;
+      for (size_t i = 1; i < sizeof(curve) / sizeof(curve[0]); ++i) {
+        if (voltage <= curve[i].voltage) {
+          const auto &low = curve[i - 1];
+          const auto &high = curve[i];
+          return low.soc + (voltage - low.voltage) *
+            (high.soc - low.soc) / (high.voltage - low.voltage);
+        }
+      }
+      return 100.0f;
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: ip_address
+      name: "HMI IP Address"
+      entity_category: diagnostic
+  - platform: version
+    name: "ESPHome Version"
+    entity_category: diagnostic
+  - platform: debug
+    reset_reason:
+      id: hmi_reset_reason
+      name: "HMI Reset Reason"
+      entity_category: diagnostic

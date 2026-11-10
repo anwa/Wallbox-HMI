@@ -1,0 +1,27 @@
+# Required vars: id (value label), y, caption, initial (placeholder text).
+x: 12
+y: ${y}
+width: 358
+height: 24
+pad_all: 0
+border_width: 0
+bg_opa: TRANSP
+text_color: 0xFFFFFF
+widgets:
+  - label:
+      x: 0
+      y: 3
+      width: 168
+      text: ${caption}
+      text_font: font_small
+      text_color: 0xFFFFFF
+  - label:
+      id: ${id}
+      x: 168
+      y: 0
+      width: 190
+      height: 24
+      text: ${initial}
+      text_color: 0xFFFFFF
+      text_align: RIGHT
+      long_mode: DOT

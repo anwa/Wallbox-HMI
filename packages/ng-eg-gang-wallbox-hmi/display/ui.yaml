@@ -117,16 +117,19 @@ lvgl:
 
       - button: !include
           file: widgets/navigation.yaml
-          vars: {id: nav_overview, x: 12, page_id: page_overview, index: 0, title: Übersicht}
+          vars: {id: nav_overview, x: 12, width: 148, page_id: page_overview, index: 0, title: Übersicht}
       - button: !include
           file: widgets/navigation.yaml
-          vars: {id: nav_phases, x: 209, page_id: page_phases, index: 1, title: Phasen}
+          vars: {id: nav_phases, x: 169, width: 148, page_id: page_phases, index: 1, title: Phasen}
       - button: !include
           file: widgets/navigation.yaml
-          vars: {id: nav_trends, x: 406, page_id: page_trends, index: 2, title: Trends}
+          vars: {id: nav_trends, x: 326, width: 148, page_id: page_trends, index: 2, title: Trends}
       - button: !include
           file: widgets/navigation.yaml
-          vars: {id: nav_control, x: 603, page_id: page_control, index: 3, title: Ladestrom}
+          vars: {id: nav_control, x: 483, width: 148, page_id: page_control, index: 3, title: Ladestrom}
+      - button: !include
+          file: widgets/navigation.yaml
+          vars: {id: nav_system, x: 640, width: 148, page_id: page_system, index: 4, title: System}
 
       # Confirmation blocks navigation and prevents accidental current changes.
       - obj:
@@ -421,3 +424,4 @@ lvgl:
                   width: 730
                   text: "HA-Automation setzt die Vorgabe um.\n0 A fordert eine Ladepause an; kein Not-Aus."
                   styles: muted_text
+    - !include pages/system.yaml

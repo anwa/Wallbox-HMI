@@ -37,7 +37,7 @@ Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und G
 sind für das Waveshare-Board eingerichtet. Die Gestaltung orientiert sich am
 Referenzprojekt `D:\Workspace\esphome-r4875g1-3phase-charger`.
 
-Eine feste Titelzeile zeigt die Firmware-Version neben dem Titel, Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben vier
+Eine feste Titelzeile zeigt die Firmware-Version neben dem Titel, Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben fünf
 Navigationsbuttons auf allen Seiten sichtbar:
 
 - **Übersicht:** Ladeleistung, Ladezustand mit HA-Statustext, geladene Energie,
@@ -51,6 +51,13 @@ Navigationsbuttons auf allen Seiten sichtbar:
   HA-Helfer `input_select.wallbox_max_current_buttons`. Auswahl im Helfer und
   Wallbox-Rückmeldung werden getrennt dargestellt. Eine erfolgreiche HA-Anfrage
   bestätigt noch nicht, dass die Wallbox den Strom bereits übernommen hat.
+- **System:** IP-Adresse, farbig bewertetes WLAN-Signal, Laufzeit, CPU-Temperatur,
+  lokale Pufferbatterie mit geschätztem SOC, freier Heap, größter freier Heap-Block,
+  freier PSRAM, maximale Loop-Zeit und CPU-Takt. Statt der Rectifier-Anzeigen des
+  Referenzprojekts erscheinen HA-Verbindung, Wallbox-Zustand, Stromvorgabe und
+  Neustartgrund des HMI. Die Seite enthält keine Neustart- oder Steuerungsbuttons.
+
+Die Systemseite verwendet lokale ESPHome-Diagnosesensoren und wird nur bei geöffneter Seite im bestehenden 1-Sekunden-UI-Takt aktualisiert. Die Sensoren messen unabhängig davon weiter; Speicher-/Loop-Daten kommen vom vorhandenen 5-Sekunden-Debug-Takt, CPU-Temperatur, Laufzeit und WLAN-Signal werden alle 10 Sekunden erfasst. Lokale Diagnosen bleiben ohne HA verfügbar; nicht verfügbare Wallbox-Werte erscheinen als `--`. Die angezeigte lokale Batterie-SOC ist lediglich die aus dem Referenzprojekt übernommene Spannungsschätzung für eine 1S-Li-Ion-Zelle, keine präzise Ladungsmessung und kein Schutzmechanismus. Sie benötigt dieselbe TP1/GPIO6-Verbindung wie die Spannungsanzeige. Speicherwerte werden korrekt in KiB (1024 Byte) angezeigt. Die ESPHome-Version und die lokalen Diagnosewerte sind zusätzlich als Diagnose-Entities verfügbar.
 
 Die Batteriebank nutzt die sechs aggregierten HA-Entities `sensor.solar_battery_bank_reported_bank_*` aus dem Referenzprojekt. Ihre Zuordnung steht als `battery_bank_*_entity`-Substitutionen in `packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml` und kann bei Bedarf in der Haupt-YAML überschrieben werden. Die Quellleistung wird wie im Referenzprojekt von W nach kW umgerechnet (`battery_bank_power_scale_to_kw: "0.001"`). Diese Entities sind nicht Teil des ausschließlich wallboxbezogenen Exports `wallbox-entities.json`.
 

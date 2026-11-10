@@ -4,6 +4,16 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+### Added
+
+- Add a read-only System page adapted from the reference project, with local network, uptime, CPU temperature, memory, loop-time and CPU-frequency diagnostics plus the HMI reset reason.
+- Show local backup-battery voltage and an explicitly approximate voltage-based SOC on the System page; local diagnostics remain available without Home Assistant.
+- Replace reference rectifier lifecycle rows with HA connectivity, wallbox state and current-command feedback; add a fifth persistent navigation button.
+
+### Fixed
+
+- Set System-page headings, captions and ordinary values explicitly to white so transparent row containers cannot introduce unreadable theme text colors; retain meaningful status colors.
+
 ## [0.2.0] - 2026-11-10
 
 ### Added

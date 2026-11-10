@@ -1,0 +1,100 @@
+# Local diagnostics adapted from the reference System page. No rectifier backend.
+id: page_system
+styles: page_style
+widgets:
+  - obj:
+      x: 12
+      y: 70
+      width: 382
+      height: 110
+      styles: card_style
+      widgets:
+        - label:
+            x: 12
+            y: 10
+            text: "NETZWERK"
+            text_color: 0xFFFFFF
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_ip, y: 40, caption: IP-Adresse, initial: "--"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_wifi, y: 72, caption: WLAN-Signal, initial: "-- dBm"}
+  - obj:
+      x: 406
+      y: 70
+      width: 382
+      height: 160
+      styles: card_style
+      widgets:
+        - label:
+            x: 12
+            y: 10
+            text: "LOKALES HMI"
+            text_color: 0xFFFFFF
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_uptime, y: 40, caption: Laufzeit, initial: "--"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_cpu, y: 72, caption: CPU-Temperatur, initial: "-- °C"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_battery, y: 104, caption: "Pufferbatterie (ca.)", initial: "-- V / -- %"}
+        - label:
+            x: 12
+            y: 136
+            text: "SOC ist nur eine Spannungsschätzung."
+            text_font: font_small
+            text_color: 0xFFFFFF
+  - obj:
+      x: 12
+      y: 190
+      width: 382
+      height: 214
+      styles: card_style
+      widgets:
+        - label:
+            x: 12
+            y: 10
+            text: "SPEICHER / LAUFZEIT"
+            text_color: 0xFFFFFF
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_heap, y: 40, caption: Heap frei, initial: "-- KiB"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_heap_block, y: 72, caption: Größter Heap-Block, initial: "-- KiB"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_psram, y: 104, caption: PSRAM frei, initial: "-- KiB"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_loop_time, y: 136, caption: Maximale Loop-Zeit, initial: "-- ms"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_cpu_frequency, y: 168, caption: CPU-Takt, initial: "-- MHz"}
+  - obj:
+      x: 406
+      y: 240
+      width: 382
+      height: 164
+      styles: card_style
+      widgets:
+        - label:
+            x: 12
+            y: 10
+            text: "STATUS / NEUSTART"
+            text_color: 0xFFFFFF
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_ha, y: 40, caption: Home Assistant, initial: Offline}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_wallbox, y: 68, caption: Wallbox-Zustand, initial: "--"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_current_limit, y: 96, caption: Stromvorgabe, initial: "-- A"}
+        - obj: !include
+            file: ../widgets/system_row.yaml
+            vars: {id: system_reset_reason, y: 124, caption: Neustartgrund, initial: "--"}

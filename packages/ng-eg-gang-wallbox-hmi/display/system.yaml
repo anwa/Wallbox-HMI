@@ -1,0 +1,62 @@
+# ==============================================================================
+# SYSTEM PAGE RUNTIME
+# ==============================================================================
+#
+# Called by the existing UI refresh only while System is selected. Local values
+# are deliberately not gated by HA availability or cleared by HA disconnection.
+# ==============================================================================
+
+script:
+  - id: refresh_system
+    then:
+      - lambda: |-
+          using wallbox_ui::value_label;
+          using wallbox_ui::valid_text;
+          const bool wlan = id(hmi_wifi).is_connected();
+          const bool ha = id(wallbox_api).is_connected_with_state_subscription();
+          lv_label_set_text(id(system_ip), wlan && valid_text(id(ip_address).state) ?
+            id(ip_address).state.c_str() : "--");
+          const float rssi = wlan ? id(wifi_sig).state : NAN;
+          value_label(id(system_wifi), rssi, 0, "dBm");
+          const uint32_t rssi_color = !std::isfinite(rssi) ? 0x9AAAB8 :
+            rssi >= -60.0f ? 0x68E0A0 : rssi >= -75.0f ? 0xFFB65C : 0xFF6060;
+          lv_obj_set_style_text_color(id(system_wifi), lv_color_hex(rssi_color), LV_PART_MAIN);
+
+          const float uptime = id(debug_uptime).state;
+          if (std::isfinite(uptime) && uptime >= 0.0f && uptime < 4294967295.0) {
+            const uint32_t seconds = static_cast<uint32_t>(uptime);
+            lv_label_set_text_fmt(id(system_uptime), "%lu d %02lu:%02lu",
+              static_cast<unsigned long>(seconds / 86400U),
+              static_cast<unsigned long>((seconds % 86400U) / 3600U),
+              static_cast<unsigned long>((seconds % 3600U) / 60U));
+          } else {
+            lv_label_set_text(id(system_uptime), "--");
+          }
+          value_label(id(system_cpu), id(cpu_temp).state, 1, "°C");
+          const float voltage = id(local_backup_battery_voltage).state;
+          const float soc = id(local_backup_battery_soc).state;
+          if (std::isfinite(voltage) && std::isfinite(soc)) {
+            char text[48];
+            std::snprintf(text, sizeof(text), "%.2f V / %.0f %%", voltage, soc);
+            for (char *p = text; *p; ++p) if (*p == '.') *p = ',';
+            lv_label_set_text(id(system_battery), text);
+          } else {
+            lv_label_set_text(id(system_battery), "-- V / -- %");
+          }
+          // Reuse the header's thresholds rather than maintaining a second set.
+          lv_obj_set_style_text_color(id(system_battery),
+            lv_obj_get_style_text_color(id(header_battery), LV_PART_MAIN), LV_PART_MAIN);
+
+          value_label(id(system_heap), id(debug_heap_free).state / 1024.0f, 0, "KiB");
+          value_label(id(system_heap_block), id(debug_heap_max_block).state / 1024.0f, 0, "KiB");
+          value_label(id(system_psram), id(debug_free_psram).state / 1024.0f, 0, "KiB");
+          value_label(id(system_loop_time), id(debug_loop_time).state, 0, "ms");
+          value_label(id(system_cpu_frequency), id(debug_cpu_frequency).state / 1000000.0f, 0, "MHz");
+
+          lv_label_set_text(id(system_ha), ha ? "Verbunden" : "Offline");
+          lv_obj_set_style_text_color(id(system_ha), lv_color_hex(ha ? 0x68E0A0 : 0xFFB65C), LV_PART_MAIN);
+          lv_label_set_text(id(system_wallbox), ha && valid_text(id(wb_state_code).state) ?
+            id(wb_state_code).state.c_str() : "--");
+          value_label(id(system_current_limit), ha ? id(wb_current_limit).state : NAN, 1, "A");
+          lv_label_set_text(id(system_reset_reason), valid_text(id(hmi_reset_reason).state) ?
+            id(hmi_reset_reason).state.c_str() : "--");

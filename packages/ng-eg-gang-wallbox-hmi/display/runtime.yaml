@@ -147,12 +147,19 @@ script:
             else lv_obj_remove_state(current_buttons[i], LV_STATE_CHECKED);
           }
           if (!can_control) lv_obj_add_flag(id(control_dialog), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_t *navigation[] = {id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control)};
-          for (int i = 0; i < 4; ++i) {
+          lv_obj_t *navigation[] = {
+            id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control), id(nav_system)
+          };
+          for (int i = 0; i < 5; ++i) {
             if (i == id(active_page)) lv_obj_add_state(navigation[i], LV_STATE_CHECKED);
             else lv_obj_remove_state(navigation[i], LV_STATE_CHECKED);
           }
       - script.execute: refresh_battery_bank
+      - if:
+          condition:
+            lambda: return id(active_page) == 4;
+          then:
+            - script.execute: refresh_system
 
   - id: refresh_trends
     then:
