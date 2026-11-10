@@ -20,6 +20,7 @@
 - Extend the existing hardware, HA-import, presentation and command boundaries instead of adding competing implementations. The reference project's dual-target architecture is not a requirement for this single-target HMI.
 - YAML comments stay English and explain non-obvious hardware dependencies, timing, failure behavior and implementation choices. Small include fragments should document their required substitution variables; C++ lambda comments use `//`, not YAML separators.
 - Keep comments and file references aligned with the implementation in the same change. README content explains setup, operation and limitations; implementation-local details belong beside the code. Distinguish working features from planned ones, and do not reformat unrelated documentation.
+- Maintain `CHANGELOG.md` in English: add concise user-visible changes under `Unreleased` in the same change, grouped as Added/Changed/Fixed/Removed when applicable. `/merge` moves the changes shipped since main's previous release into the new version's dated section; `none` leaves them unreleased. Preserve historical entries and never imply a tag proves testing.
 
 # Firmware
 

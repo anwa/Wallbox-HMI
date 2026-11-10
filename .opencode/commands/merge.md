@@ -13,7 +13,7 @@ Versionsargument: $ARGUMENTS
 - `patch`: MAJOR.MINOR.PATCH -> MAJOR.MINOR.(PATCH+1).
 - `major`: MAJOR.MINOR.PATCH -> (MAJOR+1).0.0.
 - `X.Y.Z` oder `vX.Y.Z`: genau diese neue Version, ohne führende Nullen, größer als die bisherige Version.
-- `none`: nur Merge und Branch-Cleanup, ohne Versionsänderung oder Tag.
+- `none`: nur Merge und Branch-Cleanup, ohne Versionsänderung oder Tag. Changelog-Einträge bleiben unter `Unreleased`.
 - Bei anderen oder widersprüchlichen Angaben nachfragen, statt eine Version zu erraten. Argumente nicht ungeprüft in Shell-Befehle einsetzen.
 
 ## Vorprüfung
@@ -51,7 +51,7 @@ Versionsargument: $ARGUMENTS
    ```
 
    Ist bereits ein Projektname vorhanden, behalte ihn bei. Bestehende Projektmetadaten nicht überschreiben. Die aktuelle Firmware-Version nicht zusätzlich als unabhängigen Wert in anderen Dateien pflegen.
-10. Committe nur tatsächlich notwendige Versions-/Metadatenänderungen auf dem Aufgabenbranch, mit englischer Nachricht `feat: prepare release vX.Y.Z`. Ist diese Zielversion bereits vollständig eingebunden und committed, keinen leeren Versions-Commit erstellen. Bei der ersten Einführung die Aussagen zur noch fehlenden Versionierung in AGENTS.md/README.md gezielt aktualisieren und diese Änderungen demselben Vorbereitungs-Commit zuordnen.
+10. Pflege vor dem Versions-Commit `CHANGELOG.md`: Vergleiche mit dem bisherigen Release auf main und fasse alle tatsächlich neu ausgelieferten Änderungen einschließlich früherer `none`-Merges knapp auf Englisch zusammen. Überführe die zugehörigen Einträge aus `Unreleased` in `## [X.Y.Z] - YYYY-MM-DD` mit dem aktuellen lokalen Release-Datum; nutze passende Gruppen wie Added/Changed/Fixed/Removed und lasse einen leeren `Unreleased`-Abschnitt für kommende Änderungen stehen. Fehlt ein Eintrag, ergänze ihn anhand der tatsächlichen Änderungen. Keine sachfremden oder zukünftigen Einträge als ausgeliefert markieren, keine historischen Release-Einträge überschreiben und keinen Teststatus erfinden. Einen bereits korrekt vorbereiteten Abschnitt nicht duplizieren. Committe nur tatsächlich notwendige Versions-/Metadaten- und Changelog-Änderungen auf dem Aufgabenbranch, mit englischer Nachricht `feat: prepare release vX.Y.Z`. Sind Zielversion, Einbindung und Changelog bereits vollständig committed, keinen leeren Versions-Commit erstellen. Bei der ersten Versionierung die Aussagen zur noch fehlenden Versionierung in AGENTS.md/README.md gezielt aktualisieren und diese Änderungen demselben Vorbereitungs-Commit zuordnen.
 
 ## Merge, Tag und Cleanup
 

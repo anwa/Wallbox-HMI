@@ -1,5 +1,7 @@
 # Wallbox-HMI
 
+Änderungen und Release-Historie stehen in [CHANGELOG.md](CHANGELOG.md). Neue Änderungen werden unter `Unreleased` gesammelt und beim versionierten `/merge` der neuen Version zugeordnet; bei `/merge none` bleiben sie unveröffentlicht.
+
 ## Lokaler Merge-/Release-Command
 
 `/merge` führt den aktuellen, bereits committeten Aufgabenbranch per Fast-forward nach `main`, erhöht standardmäßig die Minor-Version, erstellt einen annotierten lokalen Tag `vX.Y.Z` und löscht danach genau diesen gemergten Aufgabenbranch. Alternativen: `/merge patch`, `/merge major`, `/merge 1.2.3` oder `/merge none` ohne Versionsänderung und Tag. Bei uncommitteten Änderungen oder nicht möglichem Fast-forward stoppt der Command. Er pusht nichts und führt keine Tests, Builds oder Deployments aus.
