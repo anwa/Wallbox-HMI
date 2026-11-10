@@ -4,6 +4,8 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+## [0.1.1] - 2026-11-10
+
 ### Added
 
 - Maintain this changelog alongside changes and include release notes in the local `/merge` workflow.
