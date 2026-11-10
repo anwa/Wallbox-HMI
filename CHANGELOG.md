@@ -4,6 +4,8 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+## [0.2.0] - 2026-11-10
+
 ### Added
 
 - Show the firmware version beside the title in the persistent header, using the same central version substitution as the ESPHome project metadata.
