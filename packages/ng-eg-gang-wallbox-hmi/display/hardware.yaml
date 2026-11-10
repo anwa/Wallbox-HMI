@@ -1,4 +1,36 @@
 # Same board model and delayed display initialization as the reference HMI.
+
+# ==============================================================================
+# LOCAL HMI BACKUP BATTERY
+# ==============================================================================
+#
+# The 1S cell connects to J3. The onboard divider is:
+# VBAT -> 200 kOhm -> TP1 -> 100 kOhm -> GND.
+# Requires the external TP1 -> J8 pin 3 / AD (GPIO6) connection used by the
+# reference project. Do not connect the battery voltage directly to GPIO6.
+# This is a local diagnostic only, independent of HA and the solar battery bank.
+# ==============================================================================
+
+sensor:
+  - platform: adc
+    id: local_backup_battery_voltage
+    name: "HMI Battery Voltage"
+    pin: GPIO6
+    attenuation: 6db
+    update_interval: 5s
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+    entity_category: diagnostic
+    accuracy_decimals: 2
+    icon: mdi:battery
+    filters:
+      # Restore VBAT from the onboard 1:3 divider, then smooth five readings.
+      - multiply: 3.0
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+
 i2c:
   - id: board_i2c
     sda: GPIO8

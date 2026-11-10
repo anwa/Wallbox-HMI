@@ -23,13 +23,19 @@ Die zentrale Projektversion steht in `packages/ng-eg-gang-wallbox-hmi/version.ya
 - Display-Hintergrundbeleuchtung (EXIO2) und Touch-Reset (EXIO1) werden über den CH422G gesteuert, nicht direkt über ESP32-GPIOs.
 - USB und CAN teilen GPIO19/20; CH422G EXIO5 schaltet zwischen USB (Low) und CAN (High) um.
 
+### Lokale HMI-Pufferbatterie
+
+Die Titelzeile zeigt die Spannung der lokalen 1S-Pufferbatterie wie im Referenzprojekt als `HMI 4.12 V`. Die Batterie wird an J3 angeschlossen. Für die Messung muss **TP1 mit J8 Pin 3 / AD (GPIO6)** verbunden sein: Der vorhandene Spannungsteiler (200 kΩ / 100 kΩ) liefert dort ein Drittel der Batteriespannung. Die Batterie niemals direkt mit dem ADC-Eingang verbinden. Ohne diese Messverbindung ist der ADC-Wert nicht zuverlässig; die Software erkennt eine fehlende Batterie oder eine offene Messleitung nicht sicher.
+
+Der ADC wird mit 6 dB Dämpfung alle 5 Sekunden gelesen; Faktor 3 stellt die Batteriespannung wieder her, ein gleitender Mittelwert glättet die letzten fünf Messungen. Wie im Referenzprojekt ist die Anzeige unter 3,50 V rot, von 3,50 bis unter 3,70 V gelb und ab 3,70 V grün. Vor dem ersten gültigen Messwert erscheint `HMI --.-- V` in Grau. Die Spannung wird außerdem als Diagnose-Sensor `HMI Battery Voltage` bereitgestellt. Die Anzeige funktioniert unabhängig von Home Assistant und ist nicht mit der Solar-Batteriebank auf der Hauptseite zu verwechseln. Die Messung am eigenen Aufbau mit einem Multimeter abgleichen; die Farbschwellen sind nur Hinweise, kein Batterie- oder Tiefentladeschutz.
+
 ## Erste GUI-Version
 
 Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und GT911-Touch
 sind für das Waveshare-Board eingerichtet. Die Gestaltung orientiert sich am
 Referenzprojekt `D:\Workspace\esphome-r4875g1-3phase-charger`.
 
-Eine feste Titelzeile zeigt Uhrzeit und HA-Verbindung; unten bleiben vier
+Eine feste Titelzeile zeigt Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben vier
 Navigationsbuttons auf allen Seiten sichtbar:
 
 - **Übersicht:** Ladeleistung, Ladezustand mit HA-Statustext, geladene Energie,
