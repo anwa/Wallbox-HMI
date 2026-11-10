@@ -4,6 +4,8 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+## [0.3.0] - 2026-11-10
+
 ### Changed
 
 - Increment the project patch version once per code-changing `/commit`, include it in the same commit and preserve intermediate patch versions during release preparation; documentation-only commits do not bump the version or create tags.
