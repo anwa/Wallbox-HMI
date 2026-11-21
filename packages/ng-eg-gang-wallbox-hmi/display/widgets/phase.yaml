@@ -2,33 +2,33 @@ x: ${x}
 y: 70
 width: 252
 height: 272
-styles: card_style
+styles: style_card
 widgets:
   - label:
       x: 20
       y: 20
       text: "PHASE L${phase}"
-      text_font: font_heading
+      text_font: font_24
       text_color: ${color}
   - label:
       x: 20
       y: 82
       text: "Spannung"
-      styles: muted_text
+      styles: style_title_label
   - label:
       id: voltage_l${phase}_value
       x: 20
       y: 110
       text: "-- V"
-      text_font: font_heading
+      text_font: font_24
   - label:
       x: 20
       y: 178
       text: "Strom"
-      styles: muted_text
+      styles: style_title_label
   - label:
       id: current_l${phase}_value
       x: 20
       y: 206
       text: "-- A"
-      text_font: font_heading
+      text_font: font_24

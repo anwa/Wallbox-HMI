@@ -5,7 +5,10 @@ Deploy the Wallbox HMI sources to Home Assistant over SSH/SCP.
 .DESCRIPTION
 Adapted from esphome-r4875g1-3phase-charger/scripts/deploy-ha.ps1.
 Copies one main YAML and its existing device-scoped package tree unchanged.
-Excludes secrets.yaml and .env files; never validates, compiles or flashes firmware.
+Excludes secrets.yaml, .env files and generated *.local.yaml files; never
+validates, compiles or flashes firmware. The shared Waveshare base is not
+copied: the ESPHome add-on loads it from GitHub at the pinned release tag,
+which must exist there.
 #>
 [CmdletBinding()]
 param(
@@ -26,6 +29,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $ProjectFile = 'ng-eg-gang-wallbox-hmi.yaml'
+$WaveshareBaseUrl = 'https://github.com/anwa/waveshare-esphome-base'
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $RunId = "$(Get-Date -Format 'yyyyMMdd-HHmmss')-$([guid]::NewGuid().ToString('N'))"
 $NetworkTimeoutSeconds = 30
@@ -90,6 +94,8 @@ function Get-ManagedFiles([string]$PackageRelativePath) {
         if ($item.PSIsContainer) { continue }
         # Use a source allowlist instead of copying the repository or credentials.
         if ($item.Name -match '^(secrets\.(yaml|yml)|\.env(?:\..*)?)$') { continue }
+        # Local-development base entry files contain absolute local paths.
+        if ($item.Name -like '*.local.yaml') { continue }
         if ($item.Extension -notin @('.yaml', '.yml', '.h', '.hpp', '.c', '.cpp', '.ttf', '.otf')) {
             throw "Unsupported package file; review the deployment allowlist: $($item.FullName)"
         }
@@ -98,12 +104,25 @@ function Get-ManagedFiles([string]$PackageRelativePath) {
         $paths += $relative
     }
     if ($paths.Count -eq 0) { throw 'The device package tree contains no deployable source files.' }
-    foreach ($required in @('trend_buffer.h', 'wallbox_ui.h')) {
+    foreach ($required in @('wallbox_ui.h', 'waveshare-base.yaml')) {
         if ($paths -notcontains "$PackageRelativePath/$required") {
             throw "Missing device include: $PackageRelativePath/$required"
         }
     }
     return @($paths | Sort-Object)
+}
+
+function Assert-PublishedBaseRef([string]$ProjectPath) {
+    # The add-on can only build a base release that exists on GitHub.
+    $match = Select-String -LiteralPath $ProjectPath -Pattern '^\s+waveshare_base_ref:\s*["'']?(v[0-9A-Za-z.-]+)["'']?\s*(?:#.*)?$' |
+        Select-Object -First 1
+    if (-not $match) { throw 'Expected one literal waveshare_base_ref substitution in the main YAML.' }
+    $ref = $match.Matches[0].Groups[1].Value
+    $remote = (& git ls-remote --tags $WaveshareBaseUrl "refs/tags/$ref" 2>$null) -join ''
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($remote)) {
+        throw "Waveshare base tag $ref is not published at $WaveshareBaseUrl."
+    }
+    return $ref
 }
 
 function Get-GitInfo {
@@ -223,6 +242,7 @@ if ((Get-Item -LiteralPath $projectPath).Attributes -band [IO.FileAttributes]::R
     throw 'The main YAML must not be a symbolic link.'
 }
 $NodeName = Get-NodeName $projectPath
+$BaseRef = Assert-PublishedBaseRef $projectPath
 if ($ProjectFile -ne "$NodeName.yaml") { throw 'Main YAML filename and esphome.name must match.' }
 $PackageRoot = "packages/$NodeName"
 $Files = @($ProjectFile) + @(Get-ManagedFiles $PackageRoot)
@@ -231,6 +251,7 @@ $StagingDir = "$RemoteDir/.deploy-staging/$NodeName-$RunId"
 
 Write-Host "  Source : $ProjectFile and $PackageRoot/"
 Write-Host "  Git    : $(Get-GitInfo)"
+Write-Host "  Base   : waveshare-esphome-base $BaseRef (loaded from GitHub by ESPHome)"
 Write-Host "  Target : ${HaUser}@${HaHost}:$RemoteDir (SSH port $Port)"
 Write-Host "  Files  : $($Files.Count)"
 

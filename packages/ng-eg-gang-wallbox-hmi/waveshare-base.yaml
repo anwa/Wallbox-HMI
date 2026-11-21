@@ -1,0 +1,20 @@
+# ==============================================================================
+# SHARED WAVESHARE BASE
+# ==============================================================================
+#
+# Loads the shared Waveshare ESP32-S3-Touch-LCD-7 base and its waveshare_ui C++
+# component from GitHub at the release pinned by waveshare_base_ref.
+#
+# Keep the files list on one line: scripts/use-local-base.ps1 of the base
+# repository reads it to generate the local development alternative.
+# ==============================================================================
+
+packages:
+  waveshare_base:
+    url: https://github.com/anwa/waveshare-esphome-base
+    ref: ${waveshare_base_ref}
+    files: [base.yaml]
+
+external_components:
+  - source: github://anwa/waveshare-esphome-base@${waveshare_base_ref}
+    components: [waveshare_ui]

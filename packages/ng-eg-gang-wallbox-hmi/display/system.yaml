@@ -13,12 +13,12 @@ script:
           using wallbox_ui::value_label;
           using wallbox_ui::valid_text;
           const bool wlan = id(hmi_wifi).is_connected();
-          const bool ha = id(wallbox_api).is_connected_with_state_subscription();
+          const bool ha = id(native_api).is_connected_with_state_subscription();
           lv_label_set_text(id(system_ip), wlan && valid_text(id(ip_address).state) ?
             id(ip_address).state.c_str() : "--");
           const float rssi = wlan ? id(wifi_sig).state : NAN;
           value_label(id(system_wifi), rssi, 0, "dBm");
-          const uint32_t rssi_color = !std::isfinite(rssi) ? 0x9AAAB8 :
+          const uint32_t rssi_color = !std::isfinite(rssi) ? 0x8B96A0 :
             rssi >= -60.0f ? 0x68E0A0 : rssi >= -75.0f ? 0xFFB65C : 0xFF6060;
           lv_obj_set_style_text_color(id(system_wifi), lv_color_hex(rssi_color), LV_PART_MAIN);
 
@@ -45,7 +45,7 @@ script:
           }
           // Reuse the header's thresholds rather than maintaining a second set.
           lv_obj_set_style_text_color(id(system_battery),
-            lv_obj_get_style_text_color(id(header_battery), LV_PART_MAIN), LV_PART_MAIN);
+            lv_obj_get_style_text_color(id(ui_header_battery), LV_PART_MAIN), LV_PART_MAIN);
 
           value_label(id(system_heap), id(debug_heap_free).state / 1024.0f, 0, "KiB");
           value_label(id(system_heap_block), id(debug_heap_max_block).state / 1024.0f, 0, "KiB");

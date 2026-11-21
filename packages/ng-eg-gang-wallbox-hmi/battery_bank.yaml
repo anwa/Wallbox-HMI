@@ -61,7 +61,7 @@ script:
   - id: refresh_battery_bank
     then:
       - lambda: |-
-          const bool online = id(wallbox_api).is_connected_with_state_subscription();
+          const bool online = id(native_api).is_connected_with_state_subscription();
           // Match the reference card: only show a complete, valid bank snapshot.
           const bool available = online &&
             std::isfinite(id(battery_bank_soc).state) &&
@@ -83,7 +83,7 @@ script:
 
           const auto &state = id(battery_bank_state).state;
           const char *text = "Keine Daten";
-          uint32_t color = 0x9AAAB8;
+          uint32_t color = 0x8B96A0;
           if (!online) {
             text = "HA offline";
             color = 0xFFB65C;
@@ -99,7 +99,7 @@ script:
             } else if (state == "Idle" || state == "idle" ||
                        state == "Standby" || state == "standby") {
               text = "Bereitschaft";
-              color = 0x9AAAB8;
+              color = 0x8B96A0;
             }
           }
           lv_label_set_text(id(battery_state_value), text);

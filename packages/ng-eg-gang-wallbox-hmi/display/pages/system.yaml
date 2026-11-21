@@ -1,13 +1,13 @@
 # Local diagnostics adapted from the reference System page. No rectifier backend.
 id: page_system
-styles: page_style
+styles: style_page
 widgets:
   - obj:
       x: 12
       y: 70
       width: 382
       height: 110
-      styles: card_style
+      styles: style_card
       widgets:
         - label:
             x: 12
@@ -25,7 +25,7 @@ widgets:
       y: 70
       width: 382
       height: 160
-      styles: card_style
+      styles: style_card
       widgets:
         - label:
             x: 12
@@ -45,14 +45,14 @@ widgets:
             x: 12
             y: 136
             text: "SOC ist nur eine Spannungsschätzung."
-            text_font: font_small
+            text_font: font_14
             text_color: 0x8B96A0
   - obj:
       x: 12
       y: 190
       width: 382
       height: 214
-      styles: card_style
+      styles: style_card
       widgets:
         - label:
             x: 12
@@ -79,7 +79,7 @@ widgets:
       y: 240
       width: 382
       height: 164
-      styles: card_style
+      styles: style_card
       widgets:
         - label:
             x: 12

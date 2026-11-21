@@ -19,7 +19,7 @@ interval:
   - interval: 10s
     then:
       - lambda: |-
-          const bool online = id(wallbox_api).is_connected_with_state_subscription();
+          const bool online = id(native_api).is_connected_with_state_subscription();
           wallbox_ui::Trends::Sample sample = {{
             id(wb_power).state,
             id(wb_voltage_l1).state, id(wb_voltage_l2).state, id(wb_voltage_l3).state,
@@ -73,25 +73,11 @@ script:
       - lambda: |-
           using wallbox_ui::value_label;
           using wallbox_ui::valid_text;
-          const bool online = id(wallbox_api).is_connected_with_state_subscription();
-          lv_label_set_text(id(header_connection), online ? "HA verbunden" : "HA offline");
-          lv_obj_set_style_text_color(id(header_connection),
+          const bool online = id(native_api).is_connected_with_state_subscription();
+          // The shared header owns clock and battery; this HMI fills the status slot.
+          lv_label_set_text(id(ui_header_status), online ? "HA verbunden" : "HA offline");
+          lv_obj_set_style_text_color(id(ui_header_status),
             lv_color_hex(online ? 0x68E0A0 : 0xFFB65C), LV_PART_MAIN);
-          auto now = id(sntp_time).now();
-          lv_label_set_text(id(header_clock), now.is_valid() ?
-            now.strftime("%d.%m.%Y  %H:%M").c_str() : "--.--.----  --:--");
-
-          // Keep the local HMI battery visible even while HA is disconnected.
-          const float battery_voltage = id(local_backup_battery_voltage).state;
-          uint32_t battery_color = 0x9AAAB8;
-          if (std::isfinite(battery_voltage)) {
-            lv_label_set_text_fmt(id(header_battery), "HMI %.2f V", battery_voltage);
-            battery_color = battery_voltage < 3.50f ? 0xFF3030 :
-              battery_voltage < 3.70f ? 0xFFC04A : 0x5CFF7A;
-          } else {
-            lv_label_set_text(id(header_battery), "HMI --.-- V");
-          }
-          lv_obj_set_style_text_color(id(header_battery), lv_color_hex(battery_color), LV_PART_MAIN);
 
           value_label(id(power_value), online ? id(wb_power).state : NAN, 2, "kW");
           value_label(id(energy_value), online ? id(wb_energy).state : NAN, 2, "kWh");
@@ -147,13 +133,9 @@ script:
             else lv_obj_remove_state(current_buttons[i], LV_STATE_CHECKED);
           }
           if (!can_control) lv_obj_add_flag(id(control_dialog), LV_OBJ_FLAG_HIDDEN);
-          lv_obj_t *navigation[] = {
-            id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control), id(nav_system)
-          };
-          for (int i = 0; i < 5; ++i) {
-            if (i == id(active_page)) lv_obj_add_state(navigation[i], LV_STATE_CHECKED);
-            else lv_obj_remove_state(navigation[i], LV_STATE_CHECKED);
-          }
+          waveshare_ui::set_active_button(
+            {id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control), id(nav_system)},
+            id(active_page));
       - script.execute: refresh_battery_bank
       - if:
           condition:
@@ -166,13 +148,9 @@ script:
       - lambda: |-
           wallbox_ui::trends().render(id(chart_host), id(trend_selection),
             id(chart_title), id(chart_axis_top), id(chart_axis_bottom), id(chart_legend));
-          lv_obj_t *buttons[] = {
-            id(trend_power), id(trend_voltage), id(trend_current), id(trend_temperature)
-          };
-          for (int i = 0; i < 4; ++i) {
-            if (i == id(trend_selection)) lv_obj_add_state(buttons[i], LV_STATE_CHECKED);
-            else lv_obj_remove_state(buttons[i], LV_STATE_CHECKED);
-          }
+          waveshare_ui::set_active_button(
+            {id(trend_power), id(trend_voltage), id(trend_current), id(trend_temperature)},
+            id(trend_selection));
 
   - id: prepare_current
     parameters:
@@ -181,7 +159,7 @@ script:
       - if:
           condition:
             lambda: |-
-              return id(wallbox_api).is_connected_with_state_subscription() &&
+              return id(native_api).is_connected_with_state_subscription() &&
                 wallbox_ui::valid_text(id(wb_current_option).state) &&
                 std::isfinite(id(wb_current_limit).state);
           then:
@@ -196,7 +174,7 @@ script:
           condition:
             lambda: |-
               const auto &option = id(requested_current_option);
-              return id(wallbox_api).is_connected_with_state_subscription() &&
+              return id(native_api).is_connected_with_state_subscription() &&
                 wallbox_ui::valid_text(id(wb_current_option).state) &&
                 std::isfinite(id(wb_current_limit).state) &&
                 (option == "0A" || option == "6A" || option == "10A" ||

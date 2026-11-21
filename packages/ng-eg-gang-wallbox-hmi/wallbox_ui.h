@@ -6,7 +6,8 @@
 #include <cstdio>
 #include <string>
 #include "lvgl.h"
-#include "trend_buffer.h"
+#include "esphome/components/waveshare_ui/trend_buffer.h"
+#include "esphome/components/waveshare_ui/ui_helpers.h"
 
 namespace wallbox_ui {
 
@@ -31,8 +32,10 @@ inline void value_label(lv_obj_t *label, float value, unsigned decimals, const c
 // Only RAM is used; missing/offline samples remain gaps, never synthetic zeroes.
 class Trends {
  public:
-  static constexpr size_t POINTS = TrendBuffer::POINTS;
-  using Sample = TrendBuffer::Sample;
+  // Eight channels: power, three voltages, three currents, PCB temperature.
+  using Buffer = waveshare_ui::TrendBuffer<361, 8, 10000>;
+  static constexpr size_t POINTS = Buffer::points;
+  using Sample = Buffer::Sample;
 
   void push(const Sample &sample, uint32_t now) {
     buffer_.push(sample, now);
@@ -84,14 +87,7 @@ class Trends {
     lv_chart_set_type(chart_, LV_CHART_TYPE_LINE);
     lv_chart_set_point_count(chart_, POINTS);
     lv_chart_set_div_line_count(chart_, 5, 7);
-    lv_obj_remove_flag(chart_, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_bg_color(chart_, lv_color_hex(0x11171C), LV_PART_MAIN);
-    lv_obj_set_style_bg_opa(chart_, LV_OPA_COVER, LV_PART_MAIN);
-    lv_obj_set_style_border_width(chart_, 0, LV_PART_MAIN);
-    lv_obj_set_style_pad_all(chart_, 0, LV_PART_MAIN);
-    lv_obj_set_style_line_color(chart_, lv_color_hex(0x303D48), LV_PART_MAIN);
-    lv_obj_set_style_line_width(chart_, 2, LV_PART_ITEMS);
-    lv_obj_set_style_size(chart_, 0, 0, LV_PART_INDICATOR);
+    waveshare_ui::apply_chart_style(chart_);
     const uint32_t colors[] = {0x4DD9E8, 0x68E0A0, 0xFFB65C};
     for (size_t i = 0; i < 3; ++i) {
       series_[i] = lv_chart_add_series(chart_, lv_color_hex(colors[i]), LV_CHART_AXIS_PRIMARY_Y);
@@ -99,7 +95,7 @@ class Trends {
     }
   }
 
-  TrendBuffer buffer_;
+  Buffer buffer_;
   lv_obj_t *chart_ = nullptr;
   lv_chart_series_t *series_[3]{};
 };

@@ -4,6 +4,26 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+### Changed
+
+- Build on the shared Waveshare base [waveshare-esphome-base](https://github.com/anwa/waveshare-esphome-base), pinned to a release tag; board, display, LVGL, backup battery, fonts, theme, header and navigation geometry come from the base.
+- Adopt the shared palette: cards `0x171D23`, buttons `0x202830`, borders `0x303A44`/`0x3B4652`, labels `0x8B96A0` and values `0xFFFFFF`.
+- Mark the active navigation button and selected trend or current button in the shared selected style (`0x36505A` with green text) instead of turquoise.
+- Show the confirmation dialog with the shared dark overlay and dialog panel; its buttons use the shared dialog-button style with 16 px text.
+- Use the shared header layout: 20 px title, version at x 180, battery reading beside a 130 px Home Assistant status slot; the clock refreshes every 10 seconds.
+- Place the five navigation buttons with the shared geometry: 146 × 58 px at y 410 instead of 148 × 54 px at y 416.
+- Add the `mdi:battery` icon to the `HMI Battery State of Charge` entity; entity names and IDs are unchanged.
+- Require ESPHome 2026.11.0.
+
+### Added
+
+- Turn the backlight off after 60 seconds without touch; the first touch on the dark display only wakes it and does not operate the control underneath.
+- Add `secrets.example.yaml` with dummy values for local validation.
+
+### Removed
+
+- Remove the device copies of the trend buffer and its host test; the history uses the base's `waveshare_ui::TrendBuffer`.
+
 ## [0.3.0] - 2026-11-10
 
 ### Changed

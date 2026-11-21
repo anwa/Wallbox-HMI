@@ -3,7 +3,7 @@ x: ${x}
 y: 70
 width: 185
 height: 44
-styles: button_style
+styles: style_button
 widgets:
   - label:
       align: CENTER

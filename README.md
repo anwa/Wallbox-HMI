@@ -35,6 +35,21 @@ Die Titelzeile zeigt die Spannung der lokalen 1S-Pufferbatterie wie im Referenzp
 
 Der ADC wird mit 6 dB Dämpfung alle 5 Sekunden gelesen; Faktor 3 stellt die Batteriespannung wieder her, ein gleitender Mittelwert glättet die letzten fünf Messungen. Wie im Referenzprojekt ist die Anzeige unter 3,50 V rot, von 3,50 bis unter 3,70 V gelb und ab 3,70 V grün. Vor dem ersten gültigen Messwert erscheint `HMI --.-- V` in Grau. Die Spannung wird außerdem als Diagnose-Sensor `HMI Battery Voltage` bereitgestellt. Die Anzeige funktioniert unabhängig von Home Assistant und ist nicht mit der Solar-Batteriebank auf der Hauptseite zu verwechseln. Die Messung am eigenen Aufbau mit einem Multimeter abgleichen; die Farbschwellen sind nur Hinweise, kein Batterie- oder Tiefentladeschutz.
 
+## Shared Waveshare Base
+
+Board, display, touch, backlight, LVGL, the local backup battery, fonts, theme, the persistent header and the navigation geometry come from the shared base [waveshare-esphome-base](https://github.com/anwa/waveshare-esphome-base). `waveshare_base_ref` in `ng-eg-gang-wallbox-hmi.yaml` pins the base release; `packages/ng-eg-gang-wallbox-hmi/waveshare-base.yaml` loads it. ESPHome downloads the base from GitHub at build time, also in the Home Assistant add-on; the tag must therefore be published.
+
+The display turns its backlight off after 60 seconds without touch. The first touch on the dark display only wakes it and does not operate the control underneath.
+
+To develop against a local working tree of the base, clone it next to this repository and run:
+
+```powershell
+..\waveshare-esphome-base\scripts\use-local-base.ps1 -Package packages/ng-eg-gang-wallbox-hmi/waveshare-base.yaml
+esphome -s waveshare_base_package packages/ng-eg-gang-wallbox-hmi/waveshare-base.local.yaml compile ng-eg-gang-wallbox-hmi.yaml
+```
+
+The generated `*.local.yaml` file is ignored by Git and skipped by `deploy-ha.ps1`. Without `-s`, the build uses the pinned tag again.
+
 ## Erste GUI-Version
 
 Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und GT911-Touch
@@ -76,8 +91,8 @@ Wallbox-Abfrage muss von der HA-Integration als `unavailable` gemeldet werden.
 
 ### Einrichtung und Prüfung
 
-Benötigt wird **ESPHome ab 2026.10.2**. Eine lokale, nicht versionierte
-`secrets.yaml` neben der Hauptkonfiguration muss diese Schlüssel enthalten:
+Benötigt wird **ESPHome ab 2026.11.0**. Eine lokale, nicht versionierte
+`secrets.yaml` neben der Hauptkonfiguration muss diese Schlüssel enthalten (`secrets.example.yaml` enthält Platzhalterwerte):
 
 `wifi_ssid`, `wifi_password`, `fallback_ap_password`, `web_server_username`,
 `web_server_password`, `api_encryption_key`.
@@ -88,7 +103,7 @@ esphome compile ng-eg-gang-wallbox-hmi.yaml
 ```
 
 Beim Übertragen auf den Ziel-PC die Haupt-YAML und den gesamten Geräteordner
-`packages/ng-eg-gang-wallbox-hmi/` einschließlich beider C++-Header zusammen
+`packages/ng-eg-gang-wallbox-hmi/` einschließlich `wallbox_ui.h` zusammen
 übernehmen. Unter `packages/` liegen gerätespezifische Dateien immer in einem
 Unterordner mit exakt dem ESPHome-Gerätenamen, damit mehrere Geräte dieselbe
 ESPHome-Installation konfliktfrei nutzen können. Schriftarten werden
@@ -97,7 +112,7 @@ Die Weboberfläche und der lokale Bildschirm verwenden unterschiedliche Oberflä
 
 ### Quellen nach Home Assistant übertragen
 
-`scripts/deploy-ha.ps1` ist die auf dieses Einzelgerät angepasste Variante des Deploy-Skripts aus dem Referenzprojekt. Es überträgt ausschließlich `ng-eg-gang-wallbox-hmi.yaml` und die Quelldateien in `packages/ng-eg-gang-wallbox-hmi/`, einschließlich der C++-Header. Die bereits gerätespezifischen Pfade bleiben unverändert; ein zweites Gerätenamen-Präfix wird nicht eingefügt. Andere Geräte, `secrets.yaml`, `.env`-Dateien, Tests, Entity-Exporte und Build-Verzeichnisse werden nicht übertragen.
+`scripts/deploy-ha.ps1` ist die auf dieses Einzelgerät angepasste Variante des Deploy-Skripts aus dem Referenzprojekt. Es überträgt ausschließlich `ng-eg-gang-wallbox-hmi.yaml` und die Quelldateien in `packages/ng-eg-gang-wallbox-hmi/`, einschließlich der C++-Header. Die bereits gerätespezifischen Pfade bleiben unverändert; ein zweites Gerätenamen-Präfix wird nicht eingefügt. Andere Geräte, `secrets.yaml`, `.env`-Dateien, Tests, Entity-Exporte und Build-Verzeichnisse werden nicht übertragen. The shared Waveshare base is not copied either: ESPHome loads it from GitHub. The script skips generated `*.local.yaml` files and stops when `waveshare_base_ref` is not a published tag of the base.
 
 Voraussetzung ist **PowerShell 7 oder neuer** (`pwsh`). Für die echte Übertragung werden außerdem `ssh` und `scp`, ein vorhandener SSH-Schlüssel mit Zugang zum HA-Host sowie dort eine POSIX-Shell und `sha256sum` benötigt. Wie im Referenzprojekt sind `10.10.80.9`, Benutzer `root`, Port `22`, Ziel `/config/esphome` und Schlüssel `$HOME/.ssh/ha_esphome_deploy` voreingestellt. Diese Werte lassen sich per Parameter überschreiben. Das Skript richtet keinen SSH-Zugang ein.
 
@@ -131,13 +146,7 @@ ESPHome installierten PyYAML prüfen:
 python -m unittest discover -s tests -v
 ```
 
-Der Trendpuffer hat unabhängige C++-Tests (C++17-Compiler erforderlich). Beispiel
-für PowerShell mit GCC; die Testdatei bleibt außerhalb des Repositorys:
-
-```powershell
-g++ -std=c++17 -Ipackages/ng-eg-gang-wallbox-hmi tests/trend_buffer_test.cpp -o "$env:TEMP/wallbox-trend-test.exe"
-& "$env:TEMP/wallbox-trend-test.exe"
-```
+The host test of the trend buffer lives in the base repository.
 
 Vor dem Einsatz auf dem Board prüfen: Touch-Ausrichtung, Seitenwechsel,
 alle vier Trendansichten und Phasenfarben, HA-Ausfall über mindestens 15 Minuten

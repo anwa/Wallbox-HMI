@@ -5,6 +5,8 @@
 # Adapted from the reference project's shared/local-diagnostics.yaml.
 # Uses the debug component already configured by the root YAML. These sensors
 # describe this HMI, not the wallbox, and do not participate in command gating.
+# The local backup-battery voltage and state of charge come from the shared
+# Waveshare base.
 # ==============================================================================
 
 sensor:
@@ -46,37 +48,6 @@ sensor:
     name: "HMI WiFi RSSI"
     entity_category: diagnostic
     update_interval: 10s
-
-  # Voltage-based estimate from the reference project, not a fuel gauge.
-  # Requires the same physical ADC wiring as local_backup_battery_voltage.
-  - platform: template
-    id: local_backup_battery_soc
-    name: "HMI Battery State of Charge"
-    unit_of_measurement: "%"
-    device_class: battery
-    state_class: measurement
-    entity_category: diagnostic
-    accuracy_decimals: 0
-    update_interval: 5s
-    lambda: |-
-      const float voltage = id(local_backup_battery_voltage).state;
-      if (!std::isfinite(voltage)) return NAN;
-      struct Point { float voltage; float soc; };
-      static const Point curve[] = {
-        {3.30f, 0.0f}, {3.50f, 5.0f}, {3.60f, 10.0f},
-        {3.70f, 25.0f}, {3.80f, 45.0f}, {3.90f, 65.0f},
-        {4.00f, 80.0f}, {4.10f, 90.0f}, {4.20f, 100.0f}
-      };
-      if (voltage <= curve[0].voltage) return 0.0f;
-      for (size_t i = 1; i < sizeof(curve) / sizeof(curve[0]); ++i) {
-        if (voltage <= curve[i].voltage) {
-          const auto &low = curve[i - 1];
-          const auto &high = curve[i];
-          return low.soc + (voltage - low.voltage) *
-            (high.soc - low.soc) / (high.voltage - low.voltage);
-        }
-      }
-      return 100.0f;
 
 text_sensor:
   - platform: wifi_info

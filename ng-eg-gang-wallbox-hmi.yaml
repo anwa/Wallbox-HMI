@@ -1,8 +1,44 @@
-# Target: Waveshare ESP32-S3-Touch-LCD-7 (800x480, GT911, CH422G)
+# ==============================================================================
+# NG|EG|GANG WALLBOX HMI
+# ==============================================================================
+#
+# Touchscreen HMI for the Heidelberg Energy Control wallbox on a Waveshare
+# ESP32-S3-Touch-LCD-7 (800x480, GT911, CH422G).
+#
+# Board, display, touch, backlight, LVGL, local backup battery, fonts, theme,
+# header and navigation geometry come from the shared Waveshare base. This
+# configuration adds network services, Home Assistant imports, pages and the
+# current-request backend.
+# ==============================================================================
+
+substitutions:
+
+  # ---------------------------------------------------------------------------
+  # SHARED WAVESHARE BASE
+  # ---------------------------------------------------------------------------
+  #
+  # waveshare_base_ref pins the base release. waveshare_base_package selects
+  # the package entry file; scripts/use-local-base.ps1 of the base repository
+  # generates a local alternative for development, selected with
+  # `esphome -s waveshare_base_package <file>`.
+  # ---------------------------------------------------------------------------
+
+  waveshare_base_ref: v1.0.0-rc.2
+  waveshare_base_package: packages/ng-eg-gang-wallbox-hmi/waveshare-base.yaml
+
+  # ---------------------------------------------------------------------------
+  # BASE PARAMETERS
+  # ---------------------------------------------------------------------------
+
+  ui_header_title: "Wallbox"
+  ui_header_status_width: "130"
+  ui_default_font: font_18
+  ui_nav_count: "5"
+  battery_entity_prefix: "HMI"
 
 packages:
   project_version: !include packages/ng-eg-gang-wallbox-hmi/version.yaml
-  display_hardware: !include packages/ng-eg-gang-wallbox-hmi/display/hardware.yaml
+  waveshare_base: !include ${waveshare_base_package}
   local_diagnostics: !include packages/ng-eg-gang-wallbox-hmi/local_diagnostics.yaml
   homeassistant: !include packages/ng-eg-gang-wallbox-hmi/homeassistant.yaml
   battery_bank: !include packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml
@@ -13,67 +49,12 @@ packages:
 esphome:
   name: ng-eg-gang-wallbox-hmi
   friendly_name: NG|EG|Gang|Wallbox-HMI
-  min_version: 2026.10.2
+  min_version: 2026.11.0
   project:
     name: wallbox.hmi
     version: "${firmware_version}"
   includes:
-    - packages/ng-eg-gang-wallbox-hmi/trend_buffer.h
     - packages/ng-eg-gang-wallbox-hmi/wallbox_ui.h
-  build_flags:
-    - -D LV_USE_CHART=1
-
-esp32:
-  variant: esp32s3
-
-  flash_size: 16MB
-  flash_mode: qio
-
-  # Waveshare recommends 120 MHz Flash and PSRAM for maximum display/LVGL
-  # performance on this board. The current ESPHome/ESP-IDF configuration rejects
-  # 120 MHz with octal PSRAM ("PSRAM 120MHz is not supported in octal mode").
-  #
-  # Do not force this through experimental sdkconfig options while ESPHome does
-  # not support the configuration cleanly. Re-evaluate 120 MHz Flash/PSRAM when
-  # stable ESPHome support becomes available, as this may provide a meaningful
-  # performance improvement for LVGL and PSRAM-heavy workloads.
-  #
-  # Waveshare's ESP-IDF example also enables CONFIG_IDF_EXPERIMENTAL_FEATURES=y
-  # for its 120 MHz configuration, but this is intentionally not enabled here.
-  flash_frequency: 80MHz
-
-  cpu_frequency: 240MHz
-
-  toolchain: esp-idf
-
-  framework:
-    type: esp-idf
-    version: recommended
-    advanced:
-      execute_from_psram: true
-      compiler_optimization: PERF
-    sdkconfig_options:
-      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: y
-
-# ==============================================================================
-# EXTERNAL PSRAM
-# ==============================================================================
-#
-# Enables the ESP32-S3 N16R8 module's 8 MB Octal PSRAM at 80 MHz.
-#
-# LVGL framebuffer allocations and other large runtime buffers may use this
-# external memory.
-# ==============================================================================
-
-psram:
-  mode: octal
-
-  # Keep this aligned with the Flash configuration above. 120 MHz remains a
-  # future performance option once ESPHome supports octal PSRAM at that speed
-  # without requiring unsupported or experimental workarounds.
-  speed: 80MHz
-
-  ignore_not_found: false
 
 # ==============================================================================
 # LOGGING
@@ -128,7 +109,7 @@ web_server:
 # ==============================================================================
 
 api:
-  id: wallbox_api
+  id: native_api
   reboot_timeout: 0s
   encryption:
     key: !secret api_encryption_key

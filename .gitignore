@@ -2,3 +2,6 @@
 secrets.yaml
 .esphome/
 __pycache__/
+
+# Generated local-development package entry files.
+*.local.yaml

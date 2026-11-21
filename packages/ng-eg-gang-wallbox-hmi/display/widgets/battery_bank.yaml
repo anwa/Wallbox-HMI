@@ -3,25 +3,25 @@ x: 592
 y: 70
 width: 196
 height: 334
-styles: card_style
+styles: style_card
 widgets:
   - label:
       x: 10
       y: 10
       text: "BATTERY BANK"
-      styles: muted_text
+      styles: style_title_label
   - label:
       id: battery_soc_value
       align: TOP_MID
       y: 53
       text: "-- %"
-      text_font: font_battery_soc
+      text_font: font_32
   - label:
       x: 10
       y: 110
       text: "Leistung"
-      text_font: font_small
-      styles: muted_text
+      text_font: font_14
+      styles: style_title_label
   - label:
       id: battery_power_value
       x: 64
@@ -33,8 +33,8 @@ widgets:
       x: 10
       y: 142
       text: "Spannung"
-      text_font: font_small
-      styles: muted_text
+      text_font: font_14
+      styles: style_title_label
   - label:
       id: battery_voltage_value
       x: 88
@@ -46,8 +46,8 @@ widgets:
       x: 10
       y: 174
       text: "Strom"
-      text_font: font_small
-      styles: muted_text
+      text_font: font_14
+      styles: style_title_label
   - label:
       id: battery_current_value
       x: 88
@@ -59,8 +59,8 @@ widgets:
       x: 10
       y: 206
       text: "Temperatur"
-      text_font: font_small
-      styles: muted_text
+      text_font: font_14
+      styles: style_title_label
   - label:
       id: battery_temperature_value
       x: 88

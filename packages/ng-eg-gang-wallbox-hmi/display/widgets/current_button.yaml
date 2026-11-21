@@ -3,12 +3,12 @@ x: ${x}
 y: 116
 width: 136
 height: 64
-styles: button_style
+styles: style_button
 widgets:
   - label:
       align: CENTER
       text: ${title}
-      text_font: font_heading
+      text_font: font_24
 on_click:
   - script.execute:
       id: prepare_current

@@ -1,10 +1,9 @@
-# Required vars: id, x, width, title, page_id, index.
+# Bottom navigation button placed by the shared Waveshare navigation geometry.
+# Required vars: id, title, page_id, index (0-based position).
 id: ${id}
-x: ${x}
-y: 416
-width: ${width}
-height: 54
-styles: button_style
+x: ${ ui_nav_x0 + index * ui_nav_step }
+y: ${ui_nav_y}
+styles: style_nav_button
 widgets:
   - label:
       align: CENTER
