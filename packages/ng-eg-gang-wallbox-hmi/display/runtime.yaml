@@ -132,7 +132,7 @@ script:
             if (online && option == options[i]) lv_obj_add_state(current_buttons[i], LV_STATE_CHECKED);
             else lv_obj_remove_state(current_buttons[i], LV_STATE_CHECKED);
           }
-          if (!can_control) lv_obj_add_flag(id(control_dialog), LV_OBJ_FLAG_HIDDEN);
+          if (!can_control) lv_obj_set_hidden(id(control_dialog), true);
           waveshare_ui::set_active_button(
             {id(nav_overview), id(nav_phases), id(nav_trends), id(nav_control), id(nav_system)},
             id(active_page));
