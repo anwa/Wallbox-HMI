@@ -49,8 +49,8 @@ script:
           id(wb_state_text).publish_state("");
           id(wb_current_option).publish_state("");
           for (auto *sensor : {id(battery_bank_soc), id(battery_bank_power),
-                               id(battery_bank_voltage), id(battery_bank_current),
-                               id(battery_bank_temperature)}) {
+                               id(battery_bank_voltage), id(battery_bank_temperature),
+                               id(pv_power), id(external_charger_power)}) {
             sensor->publish_state(NAN);
           }
           id(battery_bank_state).publish_state("");

@@ -4,6 +4,10 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+### Changed
+
+- Show PV power (`sensor.pv_power_summe`) and the output power of the separate charger (`sensor.t2hg_output`) on the battery-bank card instead of the bank current; both values appear independently of the complete bank snapshot.
+
 ## [0.4.0] - 2026-11-21
 
 ### Changed

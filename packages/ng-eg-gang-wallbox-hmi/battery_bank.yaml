@@ -2,20 +2,24 @@
 # BATTERY BANK MONITORING
 # ==============================================================================
 #
-# Aggregate HA entities from the reference charger's shared/battery-bank.yaml.
-# Monitoring only: these values must not influence wallbox control eligibility.
-# Individual batteries and the reference Battery detail page are not imported.
+# Aggregate HA entities from the reference charger's shared/battery-bank.yaml,
+# plus the site PV power and the output power of a separate charger shown on
+# the same card. Monitoring only: these values must not influence wallbox
+# control eligibility. Individual batteries and the reference Battery detail
+# page are not imported.
 # ==============================================================================
 
 substitutions:
   battery_bank_voltage_entity: sensor.solar_battery_bank_reported_bank_voltage
-  battery_bank_current_entity: sensor.solar_battery_bank_reported_bank_current
   battery_bank_power_entity: sensor.solar_battery_bank_reported_bank_power
   battery_bank_soc_entity: sensor.solar_battery_bank_reported_bank_state_of_charge
   battery_bank_temperature_entity: sensor.solar_battery_bank_reported_bank_temperature
   battery_bank_state_entity: sensor.solar_battery_bank_reported_bank_state
   # The reference HA entity reports W; the display uses kW.
   battery_bank_power_scale_to_kw: "0.001"
+  # Both site power entities report kW.
+  pv_power_entity: sensor.pv_power_summe
+  external_charger_power_entity: sensor.t2hg_output
 
 sensor:
   - platform: homeassistant
@@ -24,12 +28,6 @@ sensor:
     internal: true
     unit_of_measurement: V
     accuracy_decimals: 2
-  - platform: homeassistant
-    id: battery_bank_current
-    entity_id: ${battery_bank_current_entity}
-    internal: true
-    unit_of_measurement: A
-    accuracy_decimals: 1
   - platform: homeassistant
     id: battery_bank_power
     entity_id: ${battery_bank_power_entity}
@@ -50,6 +48,18 @@ sensor:
     internal: true
     unit_of_measurement: "°C"
     accuracy_decimals: 1
+  - platform: homeassistant
+    id: pv_power
+    entity_id: ${pv_power_entity}
+    internal: true
+    unit_of_measurement: kW
+    accuracy_decimals: 3
+  - platform: homeassistant
+    id: external_charger_power
+    entity_id: ${external_charger_power_entity}
+    internal: true
+    unit_of_measurement: kW
+    accuracy_decimals: 3
 
 text_sensor:
   - platform: homeassistant
@@ -67,7 +77,6 @@ script:
             std::isfinite(id(battery_bank_soc).state) &&
             std::isfinite(id(battery_bank_power).state) &&
             std::isfinite(id(battery_bank_voltage).state) &&
-            std::isfinite(id(battery_bank_current).state) &&
             std::isfinite(id(battery_bank_temperature).state) &&
             wallbox_ui::valid_text(id(battery_bank_state).state);
           wallbox_ui::value_label(id(battery_soc_value),
@@ -76,8 +85,11 @@ script:
             available ? id(battery_bank_power).state : NAN, 3, "kW");
           wallbox_ui::value_label(id(battery_voltage_value),
             available ? id(battery_bank_voltage).state : NAN, 2, "V");
-          wallbox_ui::value_label(id(battery_current_value),
-            available ? id(battery_bank_current).state : NAN, 1, "A");
+          // Site power values are shown independently of the bank snapshot.
+          wallbox_ui::value_label(id(pv_power_value),
+            online ? id(pv_power).state : NAN, 3, "kW");
+          wallbox_ui::value_label(id(external_charger_power_value),
+            online ? id(external_charger_power).state : NAN, 3, "kW");
           wallbox_ui::value_label(id(battery_temperature_value),
             available ? id(battery_bank_temperature).state : NAN, 1, "°C");
 

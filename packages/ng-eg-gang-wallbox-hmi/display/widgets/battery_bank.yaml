@@ -29,42 +29,56 @@ widgets:
       width: 120
       text_align: RIGHT
       text: "-- kW"
+  # Site power from Home Assistant, shown beside the bank power.
   - label:
       x: 10
       y: 142
+      text: "PV-Leistung"
+      text_font: font_14
+      styles: style_title_label
+  - label:
+      id: pv_power_value
+      x: 64
+      y: 139
+      width: 120
+      text_align: RIGHT
+      text: "-- kW"
+  - label:
+      x: 10
+      y: 174
+      text: "Ladegerät"
+      text_font: font_14
+      styles: style_title_label
+  - label:
+      id: external_charger_power_value
+      x: 64
+      y: 171
+      width: 120
+      text_align: RIGHT
+      text: "-- kW"
+  - label:
+      x: 10
+      y: 206
       text: "Spannung"
       text_font: font_14
       styles: style_title_label
   - label:
       id: battery_voltage_value
       x: 88
-      y: 139
+      y: 203
       width: 96
       text_align: RIGHT
       text: "-- V"
   - label:
       x: 10
-      y: 174
-      text: "Strom"
-      text_font: font_14
-      styles: style_title_label
-  - label:
-      id: battery_current_value
-      x: 88
-      y: 171
-      width: 96
-      text_align: RIGHT
-      text: "-- A"
-  - label:
-      x: 10
-      y: 206
+      y: 238
       text: "Temperatur"
       text_font: font_14
       styles: style_title_label
   - label:
       id: battery_temperature_value
       x: 88
-      y: 203
+      y: 235
       width: 96
       text_align: RIGHT
       text: "-- °C"

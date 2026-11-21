@@ -61,8 +61,8 @@ Navigationsbuttons auf allen Seiten sichtbar:
 
 - **Übersicht:** Ladeleistung, Ladezustand mit HA-Statustext, geladene Energie,
   PCB-Temperatur und zurückgemeldete Stromvorgabe. Rechts zeigt die Karte
-  **BATTERY BANK** den SOC, Leistung, Spannung, Strom, Temperatur und Betriebszustand
-  der Solar-Batteriebank. Eine separate Battery-Unterseite gibt es nicht.
+  **BATTERY BANK** den SOC, Leistung, Spannung, Temperatur und Betriebszustand
+  der Solar-Batteriebank sowie PV-Leistung und Ladegerät-Leistung. Eine separate Battery-Unterseite gibt es nicht.
 - **Phasen:** Spannung und Strom für L1, L2 und L3.
 - **Trends:** umschaltbare Leistung, Spannung, Strom und PCB-Temperatur.
   Spannung/Strom enthalten jeweils drei farbige Phasenkurven.
@@ -78,9 +78,9 @@ Navigationsbuttons auf allen Seiten sichtbar:
 
 Die Systemseite verwendet lokale ESPHome-Diagnosesensoren und wird nur bei geöffneter Seite im bestehenden 1-Sekunden-UI-Takt aktualisiert. Die Sensoren messen unabhängig davon weiter; Speicher-/Loop-Daten kommen vom vorhandenen 5-Sekunden-Debug-Takt, CPU-Temperatur, Laufzeit und WLAN-Signal werden alle 10 Sekunden erfasst. Lokale Diagnosen bleiben ohne HA verfügbar; nicht verfügbare Wallbox-Werte erscheinen als `--`. Die angezeigte lokale Batterie-SOC ist lediglich die aus dem Referenzprojekt übernommene Spannungsschätzung für eine 1S-Li-Ion-Zelle, keine präzise Ladungsmessung und kein Schutzmechanismus. Sie benötigt dieselbe TP1/GPIO6-Verbindung wie die Spannungsanzeige. Speicherwerte werden korrekt in KiB (1024 Byte) angezeigt. Die ESPHome-Version und die lokalen Diagnosewerte sind zusätzlich als Diagnose-Entities verfügbar.
 
-Die Batteriebank nutzt die sechs aggregierten HA-Entities `sensor.solar_battery_bank_reported_bank_*` aus dem Referenzprojekt. Ihre Zuordnung steht als `battery_bank_*_entity`-Substitutionen in `packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml` und kann bei Bedarf in der Haupt-YAML überschrieben werden. Die Quellleistung wird wie im Referenzprojekt von W nach kW umgerechnet (`battery_bank_power_scale_to_kw: "0.001"`). Diese Entities sind nicht Teil des ausschließlich wallboxbezogenen Exports `wallbox-entities.json`.
+Die Batteriebank nutzt fünf aggregierte HA-Entities `sensor.solar_battery_bank_reported_bank_*` aus dem Referenzprojekt (ohne den Bankstrom). PV-Leistung (`sensor.pv_power_summe`) und Ladegerät-Leistung (`sensor.t2hg_output`) kommen in kW als `pv_power_entity` und `external_charger_power_entity` aus derselben Datei. Ihre Zuordnung steht als `battery_bank_*_entity`-Substitutionen in `packages/ng-eg-gang-wallbox-hmi/battery_bank.yaml` und kann bei Bedarf in der Haupt-YAML überschrieben werden. Die Quellleistung wird wie im Referenzprojekt von W nach kW umgerechnet (`battery_bank_power_scale_to_kw: "0.001"`). Diese Entities sind nicht Teil des ausschließlich wallboxbezogenen Exports `wallbox-entities.json`.
 
-Die Batteriekarte ist rein lesend und beeinflusst keine Wallbox-Bedienfreigabe. Wie im Referenzprojekt werden ihre Werte nur bei vollständig verfügbaren Bankdaten angezeigt; andernfalls erscheinen `--` und „Keine Daten“ beziehungsweise „HA offline“. Ein HA-Ausfall verwirft zwischengespeicherte Batteriewerte, damit sie nach der Wiederverbindung nicht als neue Messwerte erscheinen.
+Die Batteriekarte ist rein lesend und beeinflusst keine Wallbox-Bedienfreigabe. Wie im Referenzprojekt werden die Bankwerte nur bei vollständig verfügbaren Bankdaten angezeigt; PV- und Ladegerät-Leistung erscheinen unabhängig davon, sobald HA verbunden ist und der jeweilige Wert gültig ist. Andernfalls erscheinen `--` und „Keine Daten“ beziehungsweise „HA offline“. Ein HA-Ausfall verwirft zwischengespeicherte Batteriewerte, damit sie nach der Wiederverbindung nicht als neue Messwerte erscheinen.
 
 Trends werden alle 10 Sekunden lokal im RAM aufgenommen (60 Minuten, 361 Punkte).
 Sie beginnen nach jedem Neustart leer; es wird keine HA-Historie nachgeladen.
