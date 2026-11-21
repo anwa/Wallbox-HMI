@@ -39,7 +39,7 @@ Der ADC wird mit 6 dB Dämpfung alle 5 Sekunden gelesen; Faktor 3 stellt die Bat
 
 Die Firmware-Konfiguration liegt in `ng-eg-gang-wallbox-hmi.yaml`. Display und GT911-Touch
 sind für das Waveshare-Board eingerichtet. Die Gestaltung orientiert sich am
-Referenzprojekt `D:\Workspace\esphome-r4875g1-3phase-charger`.
+Referenzprojekt `..\R4875G1-Charger\esphome-r4875g1-3phase-charger`.
 
 Eine feste Titelzeile zeigt die Firmware-Version neben dem Titel, Uhrzeit, lokale HMI-Batteriespannung und HA-Verbindung; unten bleiben fünf
 Navigationsbuttons auf allen Seiten sichtbar:

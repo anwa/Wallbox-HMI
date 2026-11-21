@@ -12,7 +12,7 @@
 - The display is intended to control the user's Heidelberg Energy Control Wallbox (11 kW, 7.5 m charging cable).
 - `wallbox-entities.json` lists all wallbox entities from the user's Home Assistant installation; use it as the reference for entity IDs rather than guessing them.
 - The display GUI must use LVGL through ESPHome.
-- GUI reference project: `D:\Workspace\esphome-r4875g1-3phase-charger`. This is outside the repository; obtain permission before accessing it, as required by `opencode.json`.
+- GUI reference project: `..\R4875G1-Charger\esphome-r4875g1-3phase-charger` (sibling folder). This is outside the repository; obtain permission before accessing it, as required by `opencode.json`.
 
 # Development and documentation
 
