@@ -17,10 +17,11 @@ substitutions:
   battery_bank_state_entity: sensor.solar_battery_bank_reported_bank_state
   # The reference HA entity reports W; the display uses kW.
   battery_bank_power_scale_to_kw: "0.001"
-  # The PV power entity reports W; the external charger entity reports kW.
+  # Both site power entities report W; the display uses kW.
   pv_power_entity: sensor.pv_power_summe
   pv_power_scale_to_kw: "0.001"
   external_charger_power_entity: sensor.t2hg_output
+  external_charger_power_scale_to_kw: "0.001"
 
 sensor:
   - platform: homeassistant
@@ -63,6 +64,8 @@ sensor:
     internal: true
     unit_of_measurement: kW
     accuracy_decimals: 3
+    filters:
+      - multiply: ${external_charger_power_scale_to_kw}
 
 text_sensor:
   - platform: homeassistant
