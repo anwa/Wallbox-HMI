@@ -4,6 +4,8 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+## [0.5.0] - 2026-11-21
+
 ### Changed
 
 - Show PV power (`sensor.pv_power_summe`) and the output power of the separate charger (`sensor.t2hg_output`) on the battery-bank card instead of the bank current; both values appear independently of the complete bank snapshot.
@@ -11,6 +13,7 @@ User-visible changes are recorded here in English, newest release first. Release
 ### Fixed
 
 - Hide the control dialog with `lv_obj_set_hidden()` instead of the deprecated `lv_obj_add_flag()`, which caused a compiler warning.
+- Build on Waveshare base v1.0.1, which removes the deprecated LVGL call from the shared chart style.
 
 ## [0.4.0] - 2026-11-21
 
