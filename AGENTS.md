@@ -1,47 +1,52 @@
-## Meine Regeln
+# Agent Instructions
 
-- Antworte mir immer auf Deutsch. Code, Code-Kommentare und Commits bleiben englisch.
-- Deutsche Texte in der App immer mit echten Umlauten: ä, ö, ü, ß. Nie ae, oe, ue oder ss als Ersatz.
-- Vor jeder neuen Aufgabe einen eigenen, passend benannten Branch mit englischem Namen anlegen. Niemals auf `main` arbeiten oder committen, auch nicht bei kleinen Änderungen. Bei Fortsetzung derselben Aufgabe den bestehenden Aufgabenbranch verwenden. Keine eigenständigen Merges nach `main`.
-- Lokale Commits nur auf ausdrücklichen Auftrag, im Format `feat: ...`, `fix: ...` oder `docs: ...`. Niemals pushen. GitHub und GitHub-Integrationen nur lesend verwenden; keine Remote-Änderungen vornehmen.
-- Tests, Konfigurationsvalidierung und Kompilierung übernimmt bis auf Weiteres der Nutzer. Nicht eigenständig ausführen oder dafür Toolchains installieren; nur auf ausdrückliche Aufforderung. Die lokale ESP-Desktop-Software wird später besprochen.
+## Inherited Rules
+
+This repository lives in a rule hierarchy. Apply these files in addition to the rules below, in this order of increasing precedence:
+
+| Level | File |
+|---|---|
+| Global | `../../../AGENTS.md` |
+| ESPHome | `../../AGENTS.md` and `../../rules/yaml-comments.md` |
+| Waveshare | `../AGENTS.md` |
+
+They define language, Git authority, branches, commits, versioning principles, documentation style, the ESPHome toolchain and validation, YAML comments and the Waveshare board, LVGL and UI conventions. This file contains only what is specific to this repository and takes precedence over the inherited files.
+
+If the inherited files are not present, for example in a fresh clone: write all repository content in English, never commit secrets, and never push, tag or publish without the user's approval.
 
 # Project context
 
-- The development PC is not the target PC; do not assume local tools or services are available on the target PC. Node.js v26.13.0 and npm 11.20.0 are installed on the development PC, but this is not a Node project.
+- The development PC is not the target PC; do not assume local tools or services are available on the target PC. Node.js and npm are installed on the development PC, but this is not a Node project.
 - The display is intended to control the user's Heidelberg Energy Control Wallbox (11 kW, 7.5 m charging cable).
 - `wallbox-entities.json` lists all wallbox entities from the user's Home Assistant installation; use it as the reference for entity IDs rather than guessing them.
 - The display GUI must use LVGL through ESPHome.
-- GUI reference project: `..\R4875G1-Charger\esphome-r4875g1-3phase-charger` (sibling folder). This is outside the repository; obtain permission before accessing it, as required by `opencode.json`.
+- GUI reference project: `..\R4875G1-Charger\esphome-r4875g1-3phase-charger` (sibling folder). For opencode it is outside the repository; obtain permission before accessing it, as required by `opencode.json`.
 
 # Development and documentation
 
-- Comment/documentation-only tasks must not change IDs, values, timing, entities or control flow. Report functional defects separately rather than silently fixing them.
 - Extend the existing hardware, HA-import, presentation and command boundaries instead of adding competing implementations. The reference project's dual-target architecture is not a requirement for this single-target HMI.
-- YAML comments stay English and explain non-obvious hardware dependencies, timing, failure behavior and implementation choices. Small include fragments should document their required substitution variables; C++ lambda comments use `//`, not YAML separators.
-- Keep comments and file references aligned with the implementation in the same change. README content explains setup, operation and limitations; implementation-local details belong beside the code. Distinguish working features from planned ones, and do not reformat unrelated documentation.
-- Maintain `CHANGELOG.md` in English: add concise user-visible changes under `Unreleased` in the same change, grouped as Added/Changed/Fixed/Removed when applicable. `/merge` moves the changes shipped since main's previous release into the new version's dated section; `none` leaves them unreleased. Preserve historical entries and never imply a tag proves testing.
+- README content explains setup, operation and limitations.
+- Maintain `CHANGELOG.md` in English: add concise user-visible changes under `Unreleased` in the same change, grouped as Added/Changed/Fixed/Removed when applicable. `/merge` moves the changes shipped since main's previous release into the new version's dated section; `none` leaves them unreleased. Preserve historical entries.
 
 # Firmware
 
-- Target hardware is the Waveshare **ESP32-S3-Touch-LCD-7** (touch model, not 7B/7C); see `README.md` and https://docs.waveshare.com/ESP32-S3-Touch-LCD-7 for wiring. Backlight and touch reset use the CH422G expander; USB and CAN share GPIO19/20 and are selected via CH422G EXIO5.
-- Local HMI backup-battery measurement requires the physical TP1 -> J8 pin 3 / AD (GPIO6) jumper and the onboard 200k/100k divider (ADC voltage x3). It is not direct VBAT input or HA telemetry. Keep its header reading independent of HA invalidation; an open measurement connection can still yield a finite ADC value.
+- Target hardware and its wiring are defined by the inherited Waveshare rules; this device does not configure EXIO2 itself and relies on the display model's default enable handling. See `README.md` for the device-specific setup.
+- The local backup-battery reading in the header stays independent of HA invalidation; an open measurement connection can still yield a finite ADC value.
 - `local_diagnostics.yaml` owns local System-page sensors (using the root `debug` component) and the approximate 1S battery SOC. `display/system.yaml` updates `display/pages/system.yaml` only for `active_page == 4`, through the existing UI refresh. Keep local diagnostics out of HA invalidation and command gating; navigation templates require an explicit width for the five-button footer.
-- `ng-eg-gang-wallbox-hmi.yaml` is the sole firmware entrypoint: ESPHome >=2026.10.2, ESP32-S3, ESP-IDF (recommended version), 16 MB QIO flash and octal PSRAM. There is no Node project or CI setup; the npm permissions in `opencode.json` are not project commands.
-- Keep flash and PSRAM at 80 MHz. The YAML documents that 120 MHz octal PSRAM is unsupported by the current configuration; do not force experimental SDK options to enable it.
-- All device-specific runtime files, including C++ headers, must live under `packages/<esphome.name>/` to avoid collisions with other devices in the same ESPHome installation. For this device use `packages/ng-eg-gang-wallbox-hmi/`: `homeassistant.yaml` owns entity imports, `display/` owns hardware, LVGL widgets and runtime. Transfer this complete device folder with the main YAML; `esphome.includes` paths remain relative to the main configuration.
+- `ng-eg-gang-wallbox-hmi.yaml` is the sole firmware entrypoint: ESPHome >=2026.10.2, ESP32-S3, ESP-IDF (recommended version). There is no Node project or CI setup; the npm permissions in `opencode.json` are not project commands.
+- Device files live under `packages/ng-eg-gang-wallbox-hmi/`: `homeassistant.yaml` owns entity imports, `display/` owns hardware, LVGL widgets and runtime. Transfer this complete device folder with the main YAML; `esphome.includes` paths remain relative to the main configuration.
 - `battery_bank.yaml` in the device package owns the read-only dashboard battery card's aggregate HA imports and rendering script. Its entity substitutions come from the reference project, not `wallbox-entities.json`; bank power is converted from W to kW. Keep battery availability independent of wallbox command eligibility; there is no Battery detail page.
-- Trends use native LVGL 9.5 charts (`LV_USE_CHART=1`), not an ESPHome chart widget. `trend_buffer.h` owns a RAM-only 361-point/10-second history; `wallbox_ui.h` renders it. Missing readings must stay gaps. Use custom font glyphs for German text; built-in Montserrat lacks umlauts.
-- Current requests go only through the existing HA input-select and require confirmation, live HA states and HA action permission. HA action success is not physical wallbox acknowledgement; do not add optimistic state updates or offline command replay.
-- This HMI is not a safety controller or independent blackstart controller. Keep HA loss visible and remote controls disabled when required state is unavailable; never substitute snapshot values from `wallbox-entities.json` or fake healthy/zero readings for missing live data. Do not bypass the existing HA/wallbox command path or weaken safety constraints during refactors.
+- Trends use native LVGL charts. `trend_buffer.h` owns a RAM-only 361-point/10-second history; `wallbox_ui.h` renders it.
+- Current requests go only through the existing HA input-select and require confirmation, live HA states and HA action permission. HA action success is not physical wallbox acknowledgement.
+- Never substitute snapshot values from `wallbox-entities.json` for missing live data. Do not bypass the existing HA/wallbox command path.
 - Preserve `reboot_timeout: 0s` under both `api` and `wifi`, plus `wifi.power_save_mode: none`: local operation must survive Home Assistant and infrastructure Wi-Fi outages without timed reboots.
 - Preserve the local web UI's offline assets (`local: true`), digest authentication, hidden internal entities, and disabled web firmware uploads; native ESPHome OTA is separate.
-- `esphome.min_version` is the ESPHome toolchain requirement, not this project's firmware version. The canonical project version is `substitutions.firmware_version` in `packages/ng-eg-gang-wallbox-hmi/version.yaml`, consumed by the main YAML's `esphome.project` metadata (`wallbox.hmi`). `/commit` explicitly authorizes exactly one PATCH increment for each code-changing commit, based on that branch's HEAD version and included in the same commit; documentation/comment-only changes do not bump it. No commit-time tags or recursive bumps for release preparation. `/merge` authorizes the local fast-forward release (minor by default), annotated tag and task-branch deletion, respecting intermediate commit-time patch increments. Neither command authorizes pushes or tests; follow the respective `.opencode/commands/` instructions.
+- The canonical project version is `substitutions.firmware_version` in `packages/ng-eg-gang-wallbox-hmi/version.yaml`, consumed by the main YAML's `esphome.project` metadata (`wallbox.hmi`). `/commit` makes exactly one PATCH increment for each code-changing commit, based on that branch's HEAD version and included in the same commit; documentation/comment-only changes do not bump it. No commit-time tags or recursive bumps for release preparation. `/merge` performs the local fast-forward release (minor by default), annotated tag and task-branch deletion, respecting intermediate commit-time patch increments. Neither command pushes; follow the respective `.opencode/commands/` instructions.
 
 # Verification and secrets
 
-- `scripts/deploy-ha.ps1` (PowerShell 7+) transfers only the main YAML and its existing device package namespace, with staging, SHA-256 checks and default backups; do not rewrite paths or add a second node prefix. It never validates, builds or flashes. Do not execute it, including `-DryRun`, without an explicit request to run it; adapting the script is not permission to deploy.
-- For user-run verification with the ESPHome CLI: `esphome config ng-eg-gang-wallbox-hmi.yaml` validates, then `esphome compile ng-eg-gang-wallbox-hmi.yaml` builds firmware. Neither command uploads firmware; agents must not run them without an explicit request.
+- `scripts/deploy-ha.ps1` (PowerShell 7+) transfers only the main YAML and its existing device package namespace, with staging, SHA-256 checks and default backups; do not rewrite paths or add a second node prefix. It never validates, builds or flashes. Running it follows the inherited ESPHome deployment rule.
+- Validation: `esphome config ng-eg-gang-wallbox-hmi.yaml`, then `esphome compile ng-eg-gang-wallbox-hmi.yaml`. Neither command uploads firmware.
 - Both require a local, ignored `secrets.yaml` beside the firmware YAML with `web_server_username`, `web_server_password`, `api_encryption_key`, `wifi_ssid`, `wifi_password`, and `fallback_ap_password`. For isolated checks, copy only source files to a temporary directory and supply dummy secrets there; never flash that build.
 - `python -m unittest discover -s tests -v` checks entity IDs, units and current options against the HA export (PyYAML comes with ESPHome). `tests/trend_buffer_test.cpp` tests history order, missing samples, ring wrap and clock rollover; see `README.md` for the host-compiler command. Schema validation alone does not compile C++ lambdas.
-- `opencode.json` denies git pushes and reads of `.env`/`.env.*`; it does not protect `secrets.yaml`. Do not read or expose real secret values when investigating validation failures.
+- `opencode.json` denies git pushes and reads of `.env`/`.env.*`; it does not protect `secrets.yaml`.
