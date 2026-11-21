@@ -4,6 +4,8 @@ User-visible changes are recorded here in English, newest release first. Release
 
 ## Unreleased
 
+## [0.4.0] - 2026-11-21
+
 ### Changed
 
 - Build on the shared Waveshare base [waveshare-esphome-base](https://github.com/anwa/waveshare-esphome-base), pinned to a release tag; board, display, LVGL, backup battery, fonts, theme, header and navigation geometry come from the base.
